@@ -1,6 +1,6 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
 var gs = {
-    friction: 3
+    friction: 2
     ,slingshot: { 
         start: { x: 0, y: 0 }
         ,finish: { x: 0, y: 0 } 
@@ -61,13 +61,10 @@ function preload() {
 
 function create() {
     game.stage.backgroundColor = '#b6ebff';
-    gs.plane = game.add.sprite(48, 48, 'a2');
+    gs.plane = game.add.sprite( 200, 200, 'a2');
     
     game.physics.enable( gs.plane, Phaser.Physics.ARCADE);
-
-    
-    //gs.plane.anchor.setTo(0.5, 0.5);
-
+    gs.plane.anchor.setTo(0.5, 0.5);
     gs.fire( gs.plane, 0, 100 );
     
     game.input.onDown.add(onMouseDown, this);
@@ -131,5 +128,5 @@ function render(){
     if( gs.slingshot.line ){
         game.debug.geom( gs.slingshot.line );    
     }
-        game.debug.rectangle( gs.plane )
+        game.debug.rectangle( gs.plane.body )
 }
