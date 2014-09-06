@@ -41,6 +41,9 @@ var gs = {
             return false;
         }
     }
+    ,getCenter: function( obj ){
+        return { x: obj.body.x + obj.body.width / 2, y: obj.body.y + obj.body.height / 2 }
+    }
     ,setSlingshotStart: function( x, y ){
         this.slingshot.start.x = x;
         this.slingshot.start.y = y;
@@ -50,7 +53,7 @@ var gs = {
     ,setSlingshotFinish: function( x, y ){
         this.slingshot.finish.x = x;
         this.slingshot.finish.y = y;
-        this.slingshot.line = false;     
+        this.slingshot.line.setTo( -1, -1, -1, -1 );     
     }
 };
 
@@ -75,7 +78,8 @@ function create() {
 function onMouseDown( pointer ){
     if( gs.isCurrentHit( pointer.x, pointer.y ) ){        
         gs.slingshot.active = true;
-        gs.setSlingshotStart( pointer.x, pointer.y );
+        
+        gs.setSlingshotStart( gs.getCenter( gs.current ).x, gs.getCenter( gs.current ).y );
     }
 }
 
@@ -105,28 +109,13 @@ function update() {
     if( gs.current ){
         gs.decreaseForce( gs.current )
         
-        if( gs.slingshot.line ){
-//            var sx = this.slingshot.start.x;
-//            var sy = this.slingshot.start.y;
-//            var fx = this.slingshot.finish.x;
-//            var fy = this.slingshot.finish.y;
-//
-//            var slingLength = Math.sqrt( ( fx - sx ) * ( fx - sx ) + ( fy - sy ) * ( fy - sy ) );
-//            
-//            if( slingLength < this.slingshot.maxLength ){
-//            }else{
-//                //gs.slingshot.line.end.set(game.input.activePointer.x, game.input.activePointer.y);
-//                
-//            }
+        if( gs.slingshot.active ){
               gs.slingshot.line.end.set(game.input.activePointer.x, game.input.activePointer.y);
-
         }
     }       
 }
 
 function render(){
-    if( gs.slingshot.line ){
-        game.debug.geom( gs.slingshot.line );    
-    }
-        game.debug.rectangle( gs.plane.body )
+    game.debug.geom( gs.slingshot.line, "#000", true );    
+    
 }
