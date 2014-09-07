@@ -1,8 +1,9 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(1280, 768, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
 var gs = {
     friction: 2
     ,planes: []
     ,currentIndex: 0
+    ,currentLabel: new Phaser.Circle( 0, 0, 50 )
     ,slingshot: { 
         start: { x: 0, y: 0 }
         ,finish: { x: 0, y: 0 } 
@@ -14,22 +15,22 @@ var gs = {
         {
             sprite: 'a1'
             ,pos: 'left'
-            ,offset: 100
+            ,offset: 130
         }
         ,{
             sprite: 'a2'
             ,pos: 'right'
-            ,offset: 100
+            ,offset: 130
         }
         ,{
             sprite: 'a3'
             ,pos: 'up'
-            ,offset: 100
+            ,offset: 130
         }
         ,{
             sprite: 'a4'
             ,pos: 'down'
-            ,offset: 100
+            ,offset: 130
         }
         
     ]
@@ -152,12 +153,12 @@ function preload() {
 }
 
 function create() {
-    game.stage.backgroundColor = '#b6ebff';
+    game.stage.backgroundColor = '#FFF';
     
     gs.createPlanes( 4 );
     
     gs.setCurrent( 0 );
-    
+        
     game.input.onDown.add(onMouseDown, this);
     game.input.onUp.add(onMouseUp, this);
         
@@ -173,14 +174,11 @@ function onMouseDown( pointer ){
 
 function onMouseUp( pointer ){
     if( gs.slingshot.active ){
+        gs.slingshot.active = false;                
         gs.setSlingshotFinish( pointer.x, pointer.y );
-        gs.slingshot.active = false;
-        
         var slingshotStrength = gs.getSlingshotStrength();
-        
         gs.fire( slingshotStrength.angle, slingshotStrength.length );
         gs.nextTurn();
-        
     }
     
 }
@@ -198,6 +196,11 @@ function update() {
 }
 
 function render(){
-    game.debug.geom( gs.slingshot.line, "#000", true );    
+    game.debug.geom( gs.slingshot.line, "#BBB", true );    
+    if( gs.current ){
+        gs.currentLabel.x = gs.current.x;
+        gs.currentLabel.y = gs.current.y;
+        game.debug.geom( gs.currentLabel, "#BBB", false );    
+    } 
     
 }
