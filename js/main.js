@@ -1,16 +1,17 @@
-var game = new Phaser.Game(1280, 768, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
+var size = screen.height;
+var game = new Phaser.Game( size, size, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
 var gs = {
     friction: 2
     ,planes: []
     ,currentIndex: 0
-    ,currentLabel: new Phaser.Circle( 0, 0, 50 )
+    ,currentLabel: new Phaser.Circle( 0, 0, 48 )
     ,slingshot: { 
         start: { x: 0, y: 0 }
         ,finish: { x: 0, y: 0 } 
         ,active: false
         ,line: false
-        ,maxLength: 100
-        ,label: new Phaser.Circle( 0, 0, 10 )
+        ,maxLength: 75
+        ,label: new Phaser.Circle( 0, 0, 15 )
         ,power: 3
         ,setStart: function( x, y ){
             this.start.x = x;
@@ -20,7 +21,7 @@ var gs = {
         ,setFinish: function( x, y ){
             this.finish.x = x;
             this.finish.y = y;
-            this.line.setTo( -1, -1, -1, -1 );     
+            this.line.end.set( x, y );
         }
     }
     ,planesSettings: [
@@ -145,14 +146,6 @@ var gs = {
     ,getCenter: function( obj ){
         return { x: obj.body.x + obj.body.width / 2, y: obj.body.y + obj.body.height / 2 }
     }
-    ,startSlingshot: function( x, y, active ){
-        this.slingshot.setStart( x, y );
-        this.slingshot.active = active;
-    }
-    ,finishSlingshot: function( x, y, active ){
-        this.slingshot.setFinish( x, y );
-        this.slingshot.active = active;
-    }
     ,toRad: function( angle ){
         return angle / 180 * Math.PI;
     }
@@ -182,14 +175,16 @@ function create() {
 
 function onMouseDown( pointer ){
     if( gs.isCurrentHit( pointer.x, pointer.y ) ){        
-        gs.startSlingshot( gs.getCenter( gs.current ).x, gs.getCenter( gs.current ).y, true );
+        gs.slingshot.setStart( gs.getCenter( gs.current ).x, gs.getCenter( gs.current ).y );
+        gs.slingshot.active = true;
     }
 }
 
 function onMouseUp( pointer ){
     if( gs.slingshot.active ){
         var slingshotStrength = gs.getSlingshotStrength( gs.slingshot.line.end.x, gs.slingshot.line.end.y );
-        gs.finishSlingshot( pointer.x, pointer.y, false );
+        gs.slingshot.active = false;
+        //gs.slingshot.line.setTo( -1, -1, -1, -1 );
         gs.fire( slingshotStrength.angle, slingshotStrength.length );
         gs.nextTurn();
     }
@@ -201,17 +196,21 @@ function update() {
     if( gs.slingshot.active ){
         var slingshotStrength = gs.getSlingshotStrength( game.input.activePointer.x, game.input.activePointer.y );
         
-        if ( slingshotStrength.length > gs.slingshot.maxLength ){
-            
-            var x = gs.slingshot.start.x + gs.slingshot.maxLength * Math.cos( gs.toRad( slingshotStrength.angle ) + Math.PI );
-            var y = gs.slingshot.start.y +  gs.slingshot.maxLength * Math.sin( gs.toRad( slingshotStrength.angle ) + Math.PI );
-            
-            gs.slingshot.line.end.set(x, y);
+        var slingshotEndX, slingshotEndY = 0;
+        
+        if ( slingshotStrength.length > gs.slingshot.maxLength ){            
+            slingshotEndX = gs.slingshot.start.x + gs.slingshot.maxLength * Math.cos( gs.toRad( slingshotStrength.angle ) + Math.PI );
+            slingshotEndY = gs.slingshot.start.y + gs.slingshot.maxLength * Math.sin( gs.toRad( slingshotStrength.angle ) + Math.PI );            
         }else{
-            gs.slingshot.line.end.set(game.input.activePointer.x, game.input.activePointer.y);
-            
+            slingshotEndX = game.input.activePointer.x;
+            slingshotEndY = game.input.activePointer.y;            
         }
+        
+        gs.slingshot.line.end.set( slingshotEndX, slingshotEndY );
+        gs.slingshot.label.x = slingshotEndX;
+        gs.slingshot.label.y = slingshotEndY;
         gs.current.angle = slingshotStrength.angle;
+        gs.slingshot.setFinish( slingshotEndX, slingshotEndY );
     }
     
     gs.planes.forEach( function( plane ){
@@ -220,11 +219,15 @@ function update() {
 }
 
 function render(){
-    game.debug.geom( gs.slingshot.line, "#BBB", true );    
+    if( gs.slingshot.active ){
+        game.debug.geom( gs.slingshot.line, "#BBB", true );
+        game.debug.geom( gs.slingshot.label, "#BBB", true );
+    } 
+    
     if( gs.current ){
         gs.currentLabel.x = gs.current.x;
         gs.currentLabel.y = gs.current.y;
-        game.debug.geom( gs.currentLabel, "#BBB", false );    
+        game.debug.geom( gs.currentLabel, "#BBB", false );        
     }
     
 }
