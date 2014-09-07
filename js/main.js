@@ -107,6 +107,20 @@ var gs = {
             sprite.body.velocity.y = 0;            
         }
     }
+    ,getSlingshotStrength: function( x, y ){
+        var sx = this.slingshot.start.x;
+        var sy = this.slingshot.start.y;
+        var fx = x || this.slingshot.finish.x;
+        var fy = y || this.slingshot.finish.y;
+        
+        var rad = Math.atan( ( fx - sx ) / ( fy - sy ) );
+        var slingLength = Math.sqrt( ( fx - sx ) * ( fx - sx ) + ( fy - sy ) * ( fy - sy ) );
+        if( fy < sy ) rad = rad + Math.PI
+        var angle = - rad / Math.PI * 180 + 270;
+        
+        return { angle: angle, length: slingLength };
+        
+    }
     ,isCurrentHit: function( x, y ){
         if( this.current ){
             return this.current.body.hitTest( x, y );
@@ -162,17 +176,9 @@ function onMouseUp( pointer ){
         gs.setSlingshotFinish( pointer.x, pointer.y );
         gs.slingshot.active = false;
         
-        var sx = gs.slingshot.start.x;
-        var sy = gs.slingshot.start.y;
-        var fx = gs.slingshot.finish.x;
-        var fy = gs.slingshot.finish.y;
+        var slingshotStrength = gs.getSlingshotStrength();
         
-        var angle = Math.atan( ( fx - sx ) / ( fy - sy ) );
-        var slingLength = Math.sqrt( ( fx - sx ) * ( fx - sx ) + ( fy - sy ) * ( fy - sy ) );
-        
-        if( fy < sy ) angle = angle + Math.PI
-        
-        gs.fire( - angle / Math.PI * 180 + 270, slingLength );
+        gs.fire( slingshotStrength.angle, slingshotStrength.length );
         gs.nextTurn();
         
     }
@@ -183,6 +189,7 @@ function update() {
     
     if( gs.slingshot.active ){
           gs.slingshot.line.end.set(game.input.activePointer.x, game.input.activePointer.y);
+          gs.current.angle = gs.getSlingshotStrength( game.input.activePointer.x, game.input.activePointer.y ).angle;
     }
     
     gs.planes.forEach( function( plane ){
