@@ -1,6 +1,8 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
 var gs = {
     friction: 2
+    ,planes: []
+    ,currentIndex: 0
     ,slingshot: { 
         start: { x: 0, y: 0 }
         ,finish: { x: 0, y: 0 } 
@@ -8,11 +10,82 @@ var gs = {
         ,line: false
         ,maxLength: 100
     }
-    ,fire: function( sprite, angle, force ){
-        this.current = sprite;        
-        sprite.angle = angle;                
-        sprite.force = force;
-        this.setVelocityToSprite( sprite, angle, force );
+    ,planesSettings: [
+        {
+            sprite: 'a1'
+            ,pos: 'left'
+            ,offset: 100
+        }
+        ,{
+            sprite: 'a2'
+            ,pos: 'right'
+            ,offset: 100
+        }
+        ,{
+            sprite: 'a3'
+            ,pos: 'up'
+            ,offset: 100
+        }
+        ,{
+            sprite: 'a4'
+            ,pos: 'down'
+            ,offset: 100
+        }
+        
+    ]
+    ,createPlanes: function( count ){
+        if( count > this.planesSettings.length ) count = this.planesSettings.length;
+        
+        for( var i = 0; i < count; i++ ){
+            var x, y, r = 0;
+            switch( this.planesSettings[i].pos ){
+                case 'left':
+                    x = this.planesSettings[i].offset;
+                    y = game.world.height / 2;
+                    r = 0;
+                    break;
+                case 'right':
+                    x = game.world.width - this.planesSettings[i].offset;
+                    y = game.world.height / 2;
+                    r = 180;
+                    break;
+                case 'up':
+                    x = game.world.width / 2;
+                    y = this.planesSettings[i].offset;
+                    r = 90;
+                    break;
+                case 'down':
+                    x = game.world.width / 2;
+                    y = game.world.height - this.planesSettings[i].offset;
+                    r = 270;
+                    break;
+                default: break;
+            }
+            var plane = game.add.sprite( x, y, this.planesSettings[i].sprite );
+            game.physics.enable( plane, Phaser.Physics.ARCADE);    
+            plane.angle = r;
+            plane.anchor.setTo(0.5, 0.5);
+            
+            this.planes.push( plane );            
+        }
+    }
+    ,setCurrent: function( index ){
+        if( this.planes[index] ){
+            this.current = this.planes[index];
+            this.currentIndex = index;
+        }        
+    }
+    ,nextTurn: function(){
+        if( this.currentIndex + 1 >= this.planes.length ){
+            this.setCurrent( 0 );
+        }else{
+            this.setCurrent( this.currentIndex + 1 );            
+        }
+    }
+    ,fire: function( angle, force ){               
+        this.current.angle = angle;                
+        this.current.force = force;
+        this.setVelocityToSprite( this.current, angle, force );
     }
     ,getVelocity: function( angle, force ){
         var alpha = Math.PI / 180 * angle;
@@ -31,7 +104,7 @@ var gs = {
             this.setVelocityToSprite( sprite, sprite.angle, sprite.force );
         }else{
             sprite.body.velocity.x = 0;
-            sprite.body.velocity.y = 0;
+            sprite.body.velocity.y = 0;            
         }
     }
     ,isCurrentHit: function( x, y ){
@@ -57,18 +130,19 @@ var gs = {
     }
 };
 
-function preload() {
+function preload() {    
     game.load.image('a1', 'assets/a1.png');
     game.load.image('a2', 'assets/a2.png');
+    game.load.image('a3', 'assets/a3.png');
+    game.load.image('a4', 'assets/a4.png');
 }
 
 function create() {
     game.stage.backgroundColor = '#b6ebff';
-    gs.plane = game.add.sprite( 200, 200, 'a2');
     
-    game.physics.enable( gs.plane, Phaser.Physics.ARCADE);
-    gs.plane.anchor.setTo(0.5, 0.5);
-    gs.fire( gs.plane, 0, 100 );
+    gs.createPlanes( 4 );
+    
+    gs.setCurrent( 0 );
     
     game.input.onDown.add(onMouseDown, this);
     game.input.onUp.add(onMouseUp, this);
@@ -98,21 +172,22 @@ function onMouseUp( pointer ){
         
         if( fy < sy ) angle = angle + Math.PI
         
-        gs.fire( gs.current, - angle / Math.PI * 180 + 270, slingLength ) 
+        gs.fire( - angle / Math.PI * 180 + 270, slingLength );
+        gs.nextTurn();
         
-        console.log( angle, slingLength );
     }
     
 }
 
 function update() {    
-    if( gs.current ){
-        gs.decreaseForce( gs.current )
-        
-        if( gs.slingshot.active ){
-              gs.slingshot.line.end.set(game.input.activePointer.x, game.input.activePointer.y);
-        }
-    }       
+    
+    if( gs.slingshot.active ){
+          gs.slingshot.line.end.set(game.input.activePointer.x, game.input.activePointer.y);
+    }
+    
+    gs.planes.forEach( function( plane ){
+        gs.decreaseForce( plane );
+    })
 }
 
 function render(){
