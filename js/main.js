@@ -10,6 +10,18 @@ var gs = {
         ,active: false
         ,line: false
         ,maxLength: 100
+        ,label: new Phaser.Circle( 0, 0, 10 )
+        ,power: 3
+        ,setStart: function( x, y ){
+            this.start.x = x;
+            this.start.y = y;
+            this.line = new Phaser.Line(x, y, game.input.activePointer.x, game.input.activePointer.y);                
+        }
+        ,setFinish: function( x, y ){
+            this.finish.x = x;
+            this.finish.y = y;
+            this.line.setTo( -1, -1, -1, -1 );     
+        }
     }
     ,planesSettings: [
         {
@@ -83,7 +95,8 @@ var gs = {
             this.setCurrent( this.currentIndex + 1 );            
         }
     }
-    ,fire: function( angle, force ){               
+    ,fire: function( angle, force ){
+        force *= this.slingshot.power;
         this.current.angle = angle;                
         this.current.force = force;
         this.setVelocityToSprite( this.current, angle, force );
@@ -132,16 +145,19 @@ var gs = {
     ,getCenter: function( obj ){
         return { x: obj.body.x + obj.body.width / 2, y: obj.body.y + obj.body.height / 2 }
     }
-    ,setSlingshotStart: function( x, y ){
-        this.slingshot.start.x = x;
-        this.slingshot.start.y = y;
-        this.slingshot.line = new Phaser.Line(x, y, game.input.activePointer.x, game.input.activePointer.y);
-        
+    ,startSlingshot: function( x, y, active ){
+        this.slingshot.setStart( x, y );
+        this.slingshot.active = active;
     }
-    ,setSlingshotFinish: function( x, y ){
-        this.slingshot.finish.x = x;
-        this.slingshot.finish.y = y;
-        this.slingshot.line.setTo( -1, -1, -1, -1 );     
+    ,finishSlingshot: function( x, y, active ){
+        this.slingshot.setFinish( x, y );
+        this.slingshot.active = active;
+    }
+    ,toRad: function( angle ){
+        return angle / 180 * Math.PI;
+    }
+    ,fromRad: function( rad ){
+        return rad / Math.PI * 180;
     }
 };
 
@@ -166,17 +182,14 @@ function create() {
 
 function onMouseDown( pointer ){
     if( gs.isCurrentHit( pointer.x, pointer.y ) ){        
-        gs.slingshot.active = true;
-        
-        gs.setSlingshotStart( gs.getCenter( gs.current ).x, gs.getCenter( gs.current ).y );
+        gs.startSlingshot( gs.getCenter( gs.current ).x, gs.getCenter( gs.current ).y, true );
     }
 }
 
 function onMouseUp( pointer ){
     if( gs.slingshot.active ){
-        gs.slingshot.active = false;                
-        gs.setSlingshotFinish( pointer.x, pointer.y );
-        var slingshotStrength = gs.getSlingshotStrength();
+        var slingshotStrength = gs.getSlingshotStrength( gs.slingshot.line.end.x, gs.slingshot.line.end.y );
+        gs.finishSlingshot( pointer.x, pointer.y, false );
         gs.fire( slingshotStrength.angle, slingshotStrength.length );
         gs.nextTurn();
     }
@@ -186,8 +199,19 @@ function onMouseUp( pointer ){
 function update() {    
     
     if( gs.slingshot.active ){
-          gs.slingshot.line.end.set(game.input.activePointer.x, game.input.activePointer.y);
-          gs.current.angle = gs.getSlingshotStrength( game.input.activePointer.x, game.input.activePointer.y ).angle;
+        var slingshotStrength = gs.getSlingshotStrength( game.input.activePointer.x, game.input.activePointer.y );
+        
+        if ( slingshotStrength.length > gs.slingshot.maxLength ){
+            
+            var x = gs.slingshot.start.x + gs.slingshot.maxLength * Math.cos( gs.toRad( slingshotStrength.angle ) + Math.PI );
+            var y = gs.slingshot.start.y +  gs.slingshot.maxLength * Math.sin( gs.toRad( slingshotStrength.angle ) + Math.PI );
+            
+            gs.slingshot.line.end.set(x, y);
+        }else{
+            gs.slingshot.line.end.set(game.input.activePointer.x, game.input.activePointer.y);
+            
+        }
+        gs.current.angle = slingshotStrength.angle;
     }
     
     gs.planes.forEach( function( plane ){
@@ -201,6 +225,6 @@ function render(){
         gs.currentLabel.x = gs.current.x;
         gs.currentLabel.y = gs.current.y;
         game.debug.geom( gs.currentLabel, "#BBB", false );    
-    } 
+    }
     
 }
