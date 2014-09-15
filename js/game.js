@@ -31,7 +31,7 @@ define(function( require ){
 
     function onMouseUp( pointer ){
         if( gs.slingshot.active ){
-            var slingshotStrength = gs.getSlingshotStrength( gs.slingshot.line.end.x, gs.slingshot.line.end.y );
+            var slingshotStrength = gs.slingshot.getPulling( gs.slingshot.line.end.x, gs.slingshot.line.end.y );
             gs.slingshot.active = false;
             //gs.slingshot.line.setTo( -1, -1, -1, -1 );
             gs.fire( slingshotStrength.angle, slingshotStrength.length );
@@ -43,7 +43,7 @@ define(function( require ){
     function update() {    
 
         if( gs.slingshot.active ){
-            var slingshotStrength = gs.getSlingshotStrength( game.input.activePointer.x, game.input.activePointer.y );
+            var slingshotStrength = gs.slingshot.getPulling( game.input.activePointer.x, game.input.activePointer.y );
 
             var slingshotEndX, slingshotEndY = 0;
 
