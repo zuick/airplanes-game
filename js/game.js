@@ -45,13 +45,9 @@ define(function( require ){
         
         gs.slingshot.pulling( gs.current, game.input.activePointer.x, game.input.activePointer.y );       
 
-        if( gs.isProcessing() ){            
-            gs.decreaseForce( gs.current );
-            if( gs.current.force <= 0 ){
-                gs.waiting();
-                gs.nextTurn();
-            }
-        }
+        gs.processForces();
+        
+        gs.processCollisions();
     }
 
     function render(){

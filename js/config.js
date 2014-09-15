@@ -1,10 +1,14 @@
 define( function(){
     return {
         world: {
-            friction: 2            
+            friction: 3            
+        }
+        ,slinshot:{
+            power: 4
         }
         ,planes:{
-            settings: [
+            hitDistance: 7
+            ,settings: [
                 {
                     sprite: 'a1'
                     ,pos: 'left'

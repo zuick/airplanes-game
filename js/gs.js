@@ -6,7 +6,7 @@ define( function( require ){
         planes: []         
         ,currentIndex: 0
         ,currentLabel: new Phaser.Circle( 0, 0, 48 )
-        ,slingshot: new Slingshot( { power: 3 } )
+        ,slingshot: new Slingshot( { power: config.slinshot.power } )
         ,createPlanes: function( count, game ){
             var settings = config.planes.settings;
             if( count > settings.length ) count = settings.length;
@@ -37,6 +37,7 @@ define( function( require ){
                     default: break;
                 }
                 var plane = game.add.sprite( x, y, settings[i].sprite );
+                plane.alive = true;
                 game.physics.enable( plane, Phaser.Physics.ARCADE);    
                 plane.angle = r;
                 plane.anchor.setTo(0.5, 0.5);
@@ -64,6 +65,8 @@ define( function( require ){
             }else{
                 this.setCurrent( this.currentIndex + 1 );            
             }
+            
+            if( !this.current.alive ) this.nextTurn();
         }
         ,fire: function( angle, force ){
             force *= this.slingshot.power;
@@ -85,10 +88,12 @@ define( function( require ){
         ,decreaseForce: function( sprite ){
             if( sprite.force && sprite.force > 0){
                 sprite.force -= config.world.friction;
+                if( sprite.force < 0 ) sprite.force = 0;
                 this.setVelocityToSprite( sprite, sprite.angle, sprite.force );
             }else{
                 sprite.body.velocity.x = 0;
-                sprite.body.velocity.y = 0;            
+                sprite.body.velocity.y = 0; 
+                sprite.force = 0;
             }
         }
         ,isCurrentHit: function( x, y ){
@@ -100,6 +105,34 @@ define( function( require ){
         }
         ,getCenter: function( obj ){
             return { x: obj.body.x + obj.body.width / 2, y: obj.body.y + obj.body.height / 2 }
+        }
+        ,getDistance: function( a, b ){
+            var a = this.getCenter( a );
+            var b = this.getCenter( b );
+            return Math.sqrt( ( b.x - a.x ) * ( b.x - a.x ) + ( b.y - a.y ) * ( b.y - a.y ) );
+        }
+        ,processForces: function(){
+            if( this.isProcessing() ){            
+                this.decreaseForce( this.current );
+                if( this.current.force <= 0 ){
+                    this.waiting();
+                    this.nextTurn();
+                }
+            }
+        }
+        ,processCollisions: function(){
+            if( this.isProcessing() ){
+                var enemies = this.planes.filter( function( plane, index ){
+                    return index !== this.currentIndex;
+                }.bind(this))
+                
+                enemies.map( function( plane ){
+                    if( this.getDistance( plane, this.current ) < config.planes.hitDistance ){
+                        plane.exists = false;
+                        plane.alive = false;
+                    }
+                }.bind(this))
+            }
         }
     };
 });
