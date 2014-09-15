@@ -2,7 +2,6 @@ define(function( require ){
     var size = screen.height - 200;
     var game = new Phaser.Game( size, size, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
     var gs = require("gs");
-    var utils = require('utils');   
 
     function preload() {    
         game.load.image('a1', 'assets/a1.png');
@@ -43,26 +42,8 @@ define(function( require ){
     }
 
     function update() {    
-
-        if( gs.slingshot.active ){
-            var slingshotStrength = gs.slingshot.getPulling( game.input.activePointer.x, game.input.activePointer.y );
-
-            var slingshotEndX, slingshotEndY = 0;
-
-            if ( slingshotStrength.length > gs.slingshot.maxLength ){            
-                slingshotEndX = gs.slingshot.start.x + gs.slingshot.maxLength * Math.cos( utils.toRad( slingshotStrength.angle ) + Math.PI );
-                slingshotEndY = gs.slingshot.start.y + gs.slingshot.maxLength * Math.sin( utils.toRad( slingshotStrength.angle ) + Math.PI );            
-            }else{
-                slingshotEndX = game.input.activePointer.x;
-                slingshotEndY = game.input.activePointer.y;            
-            }
-
-            gs.slingshot.line.end.set( slingshotEndX, slingshotEndY );
-            gs.slingshot.label.x = slingshotEndX;
-            gs.slingshot.label.y = slingshotEndY;
-            gs.current.angle = slingshotStrength.angle;
-            gs.slingshot.setFinish( slingshotEndX, slingshotEndY );
-        }
+        
+        gs.slingshot.pulling( gs.current, game.input.activePointer.x, game.input.activePointer.y );       
 
         if( gs.isProcessing() ){            
             gs.decreaseForce( gs.current );

@@ -1,4 +1,6 @@
-define( function(){
+define( function( require ){
+    var utils = require('utils'); 
+    
     return function Slingshot( options ){
         this.start = { x: 0, y: 0 };
         this.finish = { x: 0, y: 0 }; 
@@ -30,6 +32,28 @@ define( function(){
 
             return { angle: angle, length: slingLength };
 
+        }
+        this.pulling = function( plane, pointerX, pointerY ){
+            if( this.active ){
+                var slingshotStrength = this.getPulling( pointerX, pointerY );
+
+                var slingshotEndX, slingshotEndY = 0;
+
+                if ( slingshotStrength.length > this.maxLength ){            
+                    slingshotEndX = this.start.x + this.maxLength * Math.cos( utils.toRad( slingshotStrength.angle ) + Math.PI );
+                    slingshotEndY = this.start.y + this.maxLength * Math.sin( utils.toRad( slingshotStrength.angle ) + Math.PI );            
+                }else{
+                    slingshotEndX = pointerX;
+                    slingshotEndY = pointerY;            
+                }
+
+                this.line.end.set( slingshotEndX, slingshotEndY );
+                this.label.x = slingshotEndX;
+                this.label.y = slingshotEndY;
+                this.setFinish( slingshotEndX, slingshotEndY );
+                
+                plane.angle = slingshotStrength.angle;
+            }
         }
     }    
 })
