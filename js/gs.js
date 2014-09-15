@@ -1,63 +1,42 @@
 define( function( require ){
     var Slingshot = require('slingshot');
+    var config = require('config');    
+    
     return {
-        friction: 2
-        ,planes: []
+        planes: []
         ,currentIndex: 0
         ,currentLabel: new Phaser.Circle( 0, 0, 48 )
         ,slingshot: new Slingshot( { power: 3 } )
-        ,planesSettings: [
-            {
-                sprite: 'a1'
-                ,pos: 'left'
-                ,offset: 130
-            }
-            ,{
-                sprite: 'a2'
-                ,pos: 'right'
-                ,offset: 130
-            }
-            ,{
-                sprite: 'a3'
-                ,pos: 'up'
-                ,offset: 130
-            }
-            ,{
-                sprite: 'a4'
-                ,pos: 'down'
-                ,offset: 130
-            }
-
-        ]
         ,createPlanes: function( count, game ){
-            if( count > this.planesSettings.length ) count = this.planesSettings.length;
+            var settings = config.planes.settings;
+            if( count > settings.length ) count = settings.length;
 
             for( var i = 0; i < count; i++ ){
                 var x, y, r = 0;
-                switch( this.planesSettings[i].pos ){
+                switch( settings[i].pos ){
                     case 'left':
-                        x = this.planesSettings[i].offset;
+                        x = settings[i].offset;
                         y = game.world.height / 2;
                         r = 0;
                         break;
                     case 'right':
-                        x = game.world.width - this.planesSettings[i].offset;
+                        x = game.world.width - settings[i].offset;
                         y = game.world.height / 2;
                         r = 180;
                         break;
                     case 'up':
                         x = game.world.width / 2;
-                        y = this.planesSettings[i].offset;
+                        y = settings[i].offset;
                         r = 90;
                         break;
                     case 'down':
                         x = game.world.width / 2;
-                        y = game.world.height - this.planesSettings[i].offset;
+                        y = game.world.height - settings[i].offset;
                         r = 270;
                         break;
                     default: break;
                 }
-                var plane = game.add.sprite( x, y, this.planesSettings[i].sprite );
+                var plane = game.add.sprite( x, y, settings[i].sprite );
                 game.physics.enable( plane, Phaser.Physics.ARCADE);    
                 plane.angle = r;
                 plane.anchor.setTo(0.5, 0.5);
@@ -97,7 +76,7 @@ define( function( require ){
         }
         ,decreaseForce: function( sprite ){
             if( sprite.force && sprite.force > 0){
-                sprite.force -= this.friction;
+                sprite.force -= config.world.friction;
                 this.setVelocityToSprite( sprite, sprite.angle, sprite.force );
             }else{
                 sprite.body.velocity.x = 0;
@@ -113,12 +92,6 @@ define( function( require ){
         }
         ,getCenter: function( obj ){
             return { x: obj.body.x + obj.body.width / 2, y: obj.body.y + obj.body.height / 2 }
-        }
-        ,toRad: function( angle ){
-            return angle / 180 * Math.PI;
-        }
-        ,fromRad: function( rad ){
-            return rad / Math.PI * 180;
         }
     };
 });

@@ -2,6 +2,7 @@ define(function( require ){
     var size = screen.height;
     var game = new Phaser.Game( size, size, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
     var gs = require("gs");
+    var utils = require('utils');   
 
     function preload() {    
         game.load.image('a1', 'assets/a1.png');
@@ -48,8 +49,8 @@ define(function( require ){
             var slingshotEndX, slingshotEndY = 0;
 
             if ( slingshotStrength.length > gs.slingshot.maxLength ){            
-                slingshotEndX = gs.slingshot.start.x + gs.slingshot.maxLength * Math.cos( gs.toRad( slingshotStrength.angle ) + Math.PI );
-                slingshotEndY = gs.slingshot.start.y + gs.slingshot.maxLength * Math.sin( gs.toRad( slingshotStrength.angle ) + Math.PI );            
+                slingshotEndX = gs.slingshot.start.x + gs.slingshot.maxLength * Math.cos( utils.toRad( slingshotStrength.angle ) + Math.PI );
+                slingshotEndY = gs.slingshot.start.y + gs.slingshot.maxLength * Math.sin( utils.toRad( slingshotStrength.angle ) + Math.PI );            
             }else{
                 slingshotEndX = game.input.activePointer.x;
                 slingshotEndY = game.input.activePointer.y;            
