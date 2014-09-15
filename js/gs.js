@@ -3,7 +3,7 @@ define( function( require ){
     var config = require('config');    
     
     return {
-        planes: []
+        planes: []         
         ,currentIndex: 0
         ,currentLabel: new Phaser.Circle( 0, 0, 48 )
         ,slingshot: new Slingshot( { power: 3 } )
@@ -50,6 +50,14 @@ define( function( require ){
                 this.currentIndex = index;
             }        
         }
+        ,processing: function(){ 
+            this.currentLabel.setTo( -1, -1, this.currentLabel.diameter )
+            this.slingshot.line.setTo( -1, -1, -1, -1 );
+            this.state = "processing";
+        }
+        ,waiting: function(){ this.state = "waiting"; }
+        ,isProcessing: function(){ return this.state === "processing"; }
+        ,isWaiting: function(){ return this.state === "waiting"; }
         ,nextTurn: function(){
             if( this.currentIndex + 1 >= this.planes.length ){
                 this.setCurrent( 0 );

@@ -1,5 +1,5 @@
 define(function( require ){    
-    var size = screen.height;
+    var size = screen.height - 200;
     var game = new Phaser.Game( size, size, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
     var gs = require("gs");
     var utils = require('utils');   
@@ -18,13 +18,15 @@ define(function( require ){
 
         gs.setCurrent( 0 );
 
+        gs.waiting();
+        
         game.input.onDown.add(onMouseDown, this);
         game.input.onUp.add(onMouseUp, this);
 
     }
 
     function onMouseDown( pointer ){
-        if( gs.isCurrentHit( pointer.x, pointer.y ) ){        
+        if( gs.isWaiting() && gs.isCurrentHit( pointer.x, pointer.y ) ){        
             gs.slingshot.setStart( gs.getCenter( gs.current ).x, gs.getCenter( gs.current ).y, game.input.activePointer.x, game.input.activePointer.y );
             gs.slingshot.active = true;
         }
@@ -34,9 +36,8 @@ define(function( require ){
         if( gs.slingshot.active ){
             var slingshotStrength = gs.slingshot.getPulling( gs.slingshot.line.end.x, gs.slingshot.line.end.y );
             gs.slingshot.active = false;
-            //gs.slingshot.line.setTo( -1, -1, -1, -1 );
             gs.fire( slingshotStrength.angle, slingshotStrength.length );
-            gs.nextTurn();
+            gs.processing();
         }
 
     }
@@ -63,21 +64,26 @@ define(function( require ){
             gs.slingshot.setFinish( slingshotEndX, slingshotEndY );
         }
 
-        gs.planes.forEach( function( plane ){
-            gs.decreaseForce( plane );
-        })
+        if( gs.isProcessing() ){            
+            gs.decreaseForce( gs.current );
+            if( gs.current.force <= 0 ){
+                gs.waiting();
+                gs.nextTurn();
+            }
+        }
     }
 
     function render(){
-        if( gs.slingshot.active ){
-            game.debug.geom( gs.slingshot.line, "#BBB", true );
-            game.debug.geom( gs.slingshot.label, "#BBB", true );
-        } 
 
-        if( gs.current ){
+        if( gs.isWaiting() ){
+            if( gs.slingshot.active ){
+                game.debug.geom( gs.slingshot.line, "#BBB", true );
+                game.debug.geom( gs.slingshot.label, "#BBB", true );
+            } 
             gs.currentLabel.x = gs.current.x;
             gs.currentLabel.y = gs.current.y;
-            game.debug.geom( gs.currentLabel, "#BBB", false );        
         }
+        
+        game.debug.geom( gs.currentLabel, "#BBB", false );        
     }
 });
