@@ -43,7 +43,7 @@ define(function( require ){
         
         gs.slingshot.pulling( gs.current, game.input.activePointer.x, game.input.activePointer.y );       
 
-        gs.processForces();
+        gs.processForces( game );
         
         gs.processCollisions();
     }

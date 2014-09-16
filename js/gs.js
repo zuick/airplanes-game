@@ -110,10 +110,22 @@ define( function( require ){
             sprite.body.velocity.x = newVelocity.x;
             sprite.body.velocity.y = newVelocity.y;
         }
-        ,decreaseForce: function( sprite ){
+        ,outBounds: function( sprite, game ){            
+            if( sprite.body.x <= 0 ||
+                sprite.body.x + sprite.body.width >= game.world.width || 
+                sprite.body.y <= 0 ||
+                sprite.body.y + sprite.body.height >= game.world.height ) return true;
+            return false;
+        }
+        ,decreaseForce: function( sprite, game ){
             if( sprite.force && sprite.force > 0){
-                sprite.force -= config.world.friction;
-                if( sprite.force < 0 ) sprite.force = 0;
+                if( this.outBounds( sprite, game ) ){
+                    sprite.angle += 90;
+                }else{
+                    sprite.force -= config.world.friction;                    
+                }
+                if( sprite.force < 0 ) sprite.force = 0;                
+                
                 this.setVelocityToSprite( sprite, sprite.angle, sprite.force );
             }else{
                 sprite.body.velocity.x = 0;
@@ -136,9 +148,9 @@ define( function( require ){
             var b = this.getCenter( b );
             return Math.sqrt( ( b.x - a.x ) * ( b.x - a.x ) + ( b.y - a.y ) * ( b.y - a.y ) );
         }
-        ,processForces: function(){
+        ,processForces: function( game ){
             if( this.isProcessing() ){            
-                this.decreaseForce( this.current );
+                this.decreaseForce( this.current, game );
                 if( this.current.force <= 0 ){
                     this.waiting();
                     this.nextTurn();
