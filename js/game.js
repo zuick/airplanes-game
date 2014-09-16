@@ -1,6 +1,5 @@
 define(function( require ){    
-    var size = screen.height - 200;
-    var game = new Phaser.Game( size, size, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
+    var game = new Phaser.Game( window.innerWidth, window.innerHeight, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
     var gs = require("gs");
     var config = require('config'); 
     

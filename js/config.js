@@ -8,7 +8,7 @@ define( function(){
             ,labelColor: "#BBB"
         }
         ,planes:{
-            hitDistance: 10
+            hitDistance: 7
             ,lives: 3
             ,defaultSprite: 'a1'
             ,settings: [
