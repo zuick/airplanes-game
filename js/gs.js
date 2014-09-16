@@ -1,6 +1,7 @@
 define( function( require ){
     var Slingshot = require('slingshot');
     var config = require('config');    
+    var utils = require('utils');
     
     return {
         planes: []         
@@ -36,7 +37,18 @@ define( function( require ){
                         break;
                     default: break;
                 }
-                var plane = game.add.sprite( x, y, settings[i].sprite );
+                var plane = null;
+                // take airplane from sprites or fiil by color
+                if( settings[i].sprite ){
+                    plane = game.add.sprite( x, y, settings[i].sprite );                    
+                }else{
+                    var bmd = game.make.bitmapData();
+                    var color = utils.hexToRgb( settings[i].color );                    
+                    bmd.load( config.planes.defaultSprite );
+                    bmd.replaceRGB(0, 255, 0, 255, color.r, color.g, color.b, 255);
+                    plane = game.add.sprite( x, y, bmd );
+                }
+                
                 plane.alive = true;
                 game.physics.enable( plane, Phaser.Physics.ARCADE);    
                 plane.angle = r;

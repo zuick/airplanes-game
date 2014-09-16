@@ -5,9 +5,6 @@ define(function( require ){
 
     function preload() {    
         game.load.image('a1', 'assets/a1.png');
-        game.load.image('a2', 'assets/a2.png');
-        game.load.image('a3', 'assets/a3.png');
-        game.load.image('a4', 'assets/a4.png');
     }
 
     function create() {

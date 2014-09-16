@@ -8,24 +8,25 @@ define( function(){
         }
         ,planes:{
             hitDistance: 7
+            ,defaultSprite: 'a1'
             ,settings: [
                 {
-                    sprite: 'a1'
+                    color: '#618ac7'
                     ,pos: 'left'
                     ,offset: 130
                 }
                 ,{
-                    sprite: 'a2'
+                    color: '#a6ad42'
                     ,pos: 'right'
                     ,offset: 130
                 }
                 ,{
-                    sprite: 'a3'
+                    color: '#dbb753'
                     ,pos: 'up'
                     ,offset: 130
                 }
                 ,{
-                    sprite: 'a4'
+                    color: '#9e4646'
                     ,pos: 'down'
                     ,offset: 130
                 }
