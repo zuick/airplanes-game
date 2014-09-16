@@ -3,8 +3,9 @@ define( function(){
         world: {
             friction: 3            
         }
-        ,slinshot:{
+        ,slingshot:{
             power: 4
+            ,labelColor: "#BBB"
         }
         ,planes:{
             hitDistance: 7

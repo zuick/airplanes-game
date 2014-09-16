@@ -2,7 +2,8 @@ define(function( require ){
     var size = screen.height - 200;
     var game = new Phaser.Game( size, size, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
     var gs = require("gs");
-
+    var config = require('config'); 
+    
     function preload() {    
         game.load.image('a1', 'assets/a1.png');
     }
@@ -51,13 +52,13 @@ define(function( require ){
 
         if( gs.isWaiting() ){
             if( gs.slingshot.active ){
-                game.debug.geom( gs.slingshot.line, "#BBB", true );
-                game.debug.geom( gs.slingshot.label, "#BBB", true );
+                game.debug.geom( gs.slingshot.line, config.slingshot.labelColor, true );
+                game.debug.geom( gs.slingshot.label, config.slingshot.labelColor, true );
             } 
             gs.currentLabel.x = gs.current.x;
             gs.currentLabel.y = gs.current.y;
         }
         
-        game.debug.geom( gs.currentLabel, "#BBB", false );        
+        game.debug.geom( gs.currentLabel, config.slingshot.labelColor, false );        
     }
 });

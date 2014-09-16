@@ -7,7 +7,7 @@ define( function( require ){
         planes: []         
         ,currentIndex: 0
         ,currentLabel: new Phaser.Circle( 0, 0, 48 )
-        ,slingshot: new Slingshot( { power: config.slinshot.power } )
+        ,slingshot: new Slingshot( { power: config.slingshot.power } )
         ,createPlanes: function( count, game ){
             var settings = config.planes.settings;
             if( count > settings.length ) count = settings.length;
@@ -64,7 +64,7 @@ define( function( require ){
             }        
         }
         ,processing: function(){ 
-            this.currentLabel.setTo( -1, -1, this.currentLabel.diameter )
+            this.currentLabel.setTo( -this.currentLabel.diameter, -this.currentLabel.diameter, this.currentLabel.diameter )
             this.slingshot.line.setTo( -1, -1, -1, -1 );
             this.state = "processing";
         }
