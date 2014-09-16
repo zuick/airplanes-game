@@ -11,7 +11,7 @@ define(function( require ){
     function create() {
         game.stage.backgroundColor = '#FFF';
 
-        gs.createPlanes( 4, game );
+        gs.createPlanes( 2, game );
 
         gs.setCurrent( 0 );
 

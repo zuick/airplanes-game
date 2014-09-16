@@ -50,6 +50,8 @@ define( function( require ){
                 }
                 
                 plane.alive = true;
+                plane.health = config.planes.lives;
+                plane.basePosition = { x: x, y: y, r: r };
                 game.physics.enable( plane, Phaser.Physics.ARCADE);    
                 plane.angle = r;
                 plane.anchor.setTo(0.5, 0.5);
@@ -62,6 +64,17 @@ define( function( require ){
                 this.current = this.planes[index];
                 this.currentIndex = index;
             }        
+        }
+        ,setDamage: function( plane ){
+            plane.health--;
+            if( plane.health == 0 ){
+                plane.exists = false;
+                plane.alive = false;                
+            }else{
+                plane.body.x = plane.basePosition.x - plane.body.width / 2;
+                plane.body.y = plane.basePosition.y - plane.body.height / 2;
+                plane.angle = plane.basePosition.r;
+            }
         }
         ,processing: function(){ 
             this.currentLabel.setTo( -this.currentLabel.diameter, -this.currentLabel.diameter, this.currentLabel.diameter )
@@ -139,9 +152,8 @@ define( function( require ){
                 }.bind(this))
                 
                 enemies.map( function( plane ){
-                    if( this.getDistance( plane, this.current ) < config.planes.hitDistance ){
-                        plane.exists = false;
-                        plane.alive = false;
+                    if( this.getDistance( plane, this.current ) < config.planes.hitDistance ){ // success attack
+                        this.setDamage( plane );                        
                     }
                 }.bind(this))
             }
