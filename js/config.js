@@ -13,22 +13,22 @@ define( function(){
             ,defaultSprite: 'a1'
             ,settings: [
                 {
-                    color: '#618ac7'
+                    sprite: 'a1'
                     ,pos: 'left'
                     ,offset: 130
                 }
                 ,{
-                    color: '#a6ad42'
+                    sprite: 'a2'
                     ,pos: 'right'
                     ,offset: 130
                 }
                 ,{
-                    color: '#dbb753'
+                    sprite: 'a3'
                     ,pos: 'up'
                     ,offset: 130
                 }
                 ,{
-                    color: '#9e4646'
+                    sprite: 'a4'
                     ,pos: 'down'
                     ,offset: 130
                 }
