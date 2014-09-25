@@ -48,6 +48,8 @@ define(function( require ){
         gs.processForces( game );
         
         gs.processCollisions();
+        
+        gs.planeAnimations();
     }
 
     function render(){

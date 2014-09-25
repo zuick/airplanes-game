@@ -67,14 +67,9 @@ define( function( require ){
         }
         ,setDamage: function( plane ){
             plane.health--;
-            if( plane.health == 0 ){
-                plane.exists = false;
-                plane.alive = false;                
-            }else{
-                plane.body.x = plane.basePosition.x - plane.body.width / 2;
-                plane.body.y = plane.basePosition.y - plane.body.height / 2;
-                plane.angle = plane.basePosition.r;
-            }
+            plane.dieAnimation = true;
+            plane.body.velocity.x = 0;
+            plane.body.velocity.y = 0;
         }
         ,processing: function(){ 
             this.currentLabel.setTo( -this.currentLabel.diameter, -this.currentLabel.diameter, this.currentLabel.diameter )
@@ -110,22 +105,19 @@ define( function( require ){
             sprite.body.velocity.x = newVelocity.x;
             sprite.body.velocity.y = newVelocity.y;
         }
-        ,outBounds: function( sprite, game ){            
-            if( sprite.body.x <= 0 ||
-                sprite.body.x + sprite.body.width >= game.world.width || 
-                sprite.body.y <= 0 ||
-                sprite.body.y + sprite.body.height >= game.world.height ) return true;
+        ,outBounds: function( sprite, game ){       
+            var center = this.getCenter( sprite );
+            
+            if( center.x <= 0 ||
+                center.x >= game.world.width || 
+                center.y <= 0 ||
+                center.y + center.height >= game.world.height ) return true;
             return false;
         }
         ,decreaseForce: function( sprite, game ){
-            if( sprite.force && sprite.force > 0){
-                if( this.outBounds( sprite, game ) ){
-                    sprite.angle += 90;
-                }else{
-                    sprite.force -= config.world.friction;                    
-                }
-                if( sprite.force < 0 ) sprite.force = 0;                
-                
+            if( sprite.force && sprite.force > 0){                
+                sprite.force -= config.world.friction;
+                if( sprite.force < 0 ) sprite.force = 0;  
                 this.setVelocityToSprite( sprite, sprite.angle, sprite.force );
             }else{
                 sprite.body.velocity.x = 0;
@@ -151,11 +143,39 @@ define( function( require ){
         ,processForces: function( game ){
             if( this.isProcessing() ){            
                 this.decreaseForce( this.current, game );
+                
+                if( this.outBounds( this.current, game ) ) {
+                    this.setDamage( this.current );
+                    this.waiting();
+                    this.nextTurn();
+                }
+                
                 if( this.current.force <= 0 ){
                     this.waiting();
                     this.nextTurn();
                 }
             }
+        }
+        ,planeAnimations: function(){
+            this.planes.map( function( plane ){
+                if( plane.dieAnimation ) {
+                    if( plane.scale.x > 0 ){
+                        plane.scale.setTo( plane.scale.x - config.planes.dieAnimationScaleStep, plane.scale.x - config.planes.dieAnimationScaleStep )
+                        plane.angle += 10;
+                    }else{
+                        if( plane.health == 0 ){
+                            plane.exists = false;
+                            plane.alive = false;
+                        }else{
+                            plane.dieAnimation = false;
+                            plane.scale.setTo( 1, 1 );
+                            plane.body.x = plane.basePosition.x - plane.body.width / 2;
+                            plane.body.y = plane.basePosition.y - plane.body.height / 2;
+                            plane.angle = plane.basePosition.r;                            
+                        }
+                    }
+                }
+            })
         }
         ,processCollisions: function(){
             if( this.isProcessing() ){

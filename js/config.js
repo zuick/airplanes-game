@@ -11,6 +11,7 @@ define( function(){
             hitDistance: 7
             ,lives: 3
             ,defaultSprite: 'a1'
+            ,dieAnimationScaleStep: 0.07            
             ,settings: [
                 {
                     sprite: 'a1'
