@@ -18,7 +18,8 @@ define(function( require ){
         
         gs.setGameObj( game );
         
-        gs.createPlanes( 2, game );
+        var playes = ( window.location.search ) ? window.location.search.match(/p=([0-9])/)[1] : 2;
+        gs.createPlanes( playes, game );
 
         gs.setCurrent( 0 );
 
