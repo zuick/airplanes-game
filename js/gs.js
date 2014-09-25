@@ -4,10 +4,14 @@ define( function( require ){
     var utils = require('utils');
     
     return {
-        planes: []         
+        planes: []    
+        ,bonuses: []
+        ,turns: 0
         ,currentIndex: 0
         ,currentLabel: new Phaser.Circle( 0, 0, 48 )
         ,slingshot: new Slingshot( { power: config.slingshot.power } )
+        ,game: false
+        ,setGameObj: function( game ){ this.game = game }
         ,createPlanes: function( count, game ){
             var settings = config.planes.settings;
             if( count > settings.length ) count = settings.length;
@@ -38,25 +42,32 @@ define( function( require ){
                     default: break;
                 }
                 var plane = null;
-                // take airplane from sprites or fiil by color
-                if( settings[i].sprite ){
-                    plane = game.add.sprite( x, y, settings[i].sprite );                    
-                }else{
-                    var bmd = game.make.bitmapData();
-                    var color = utils.hexToRgb( settings[i].color );                    
-                    bmd.load( config.planes.defaultSprite );
-                    bmd.replaceRGB(0, 255, 0, 255, color.r, color.g, color.b, 255);
-                    plane = game.add.sprite( x, y, bmd );
-                }
                 
+                plane = game.add.sprite( x, y, settings[i].sprite );                    
+                plane.color = settings[i].color;
                 plane.alive = true;
                 plane.health = config.planes.lives;
                 plane.basePosition = { x: x, y: y, r: r };
                 game.physics.enable( plane, Phaser.Physics.ARCADE);    
                 plane.angle = r;
                 plane.anchor.setTo(0.5, 0.5);
-
+                plane.additionalTurn = false;
                 this.planes.push( plane );            
+            }
+        }
+        ,createBonuses: function(){
+            if( this.bonuses.length < 2 ){
+                var bonusName = config.bonuses[ Math.floor( Math.random() * 2 ) ];
+                var x = Math.floor( Math.random() * this.game.world.width )
+                var y = Math.floor( Math.random() * this.game.world.height )
+                
+                var bonus = this.game.add.sprite( x, y, bonusName );
+                this.game.physics.enable( bonus, Phaser.Physics.ARCADE);   
+                bonus.body.allowRotation = true;
+                bonus.body.angularVelocity = 30;
+                bonus.anchor.setTo(0.5, 0.5);
+                bonus.name = bonusName;
+                this.bonuses.push( bonus );
             }
         }
         ,setCurrent: function( index ){
@@ -76,7 +87,13 @@ define( function( require ){
             this.slingshot.line.setTo( -1, -1, -1, -1 );
             this.state = "processing";
         }
-        ,waiting: function(){ this.state = "waiting"; }
+        ,waiting: function(){ 
+            this.turns++;
+            if( this.turns % config.world.bonusFrequence == 0 ){
+                this.createBonuses()
+            }
+            this.state = "waiting";
+        }
         ,isProcessing: function(){ return this.state === "processing"; }
         ,isWaiting: function(){ return this.state === "waiting"; }
         ,nextTurn: function(){
@@ -132,6 +149,10 @@ define( function( require ){
                 return false;
             }
         }
+        ,getPlaneStateString: function( index ){
+            var state = this.planes[index].health;            
+            return state;
+        }
         ,getCenter: function( obj ){
             return { x: obj.body.x + obj.body.width / 2, y: obj.body.y + obj.body.height / 2 }
         }
@@ -152,7 +173,8 @@ define( function( require ){
                 
                 if( this.current.force <= 0 ){
                     this.waiting();
-                    this.nextTurn();
+                    if( !this.current.additionalTurn ) this.nextTurn();
+                    else this.current.additionalTurn = false;
                 }
             }
         }
@@ -161,7 +183,7 @@ define( function( require ){
                 if( plane.dieAnimation ) {
                     if( plane.scale.x > 0 ){
                         plane.scale.setTo( plane.scale.x - config.planes.dieAnimationScaleStep, plane.scale.x - config.planes.dieAnimationScaleStep )
-                        plane.angle += 10;
+                        plane.angle += 7;
                     }else{
                         if( plane.health == 0 ){
                             plane.exists = false;
@@ -185,7 +207,17 @@ define( function( require ){
                 
                 enemies.map( function( plane ){
                     if( this.getDistance( plane, this.current ) < config.planes.hitDistance ){ // success attack
-                        this.setDamage( plane );                        
+                        if( !plane.dieAnimation ) this.setDamage( plane );                        
+                    }
+                }.bind(this))
+                
+                this.bonuses.map( function( bonus, index ){
+                    if( this.getDistance( bonus, this.current ) < config.planes.hitDistance ){
+                        if( bonus.name == "bonus-turn" ) this.current.additionalTurn = true;
+                        else if( bonus.name == "bonus-plane" )  this.current.health++;
+                        
+                        this.bonuses.splice( index, 1 );
+                        bonus.destroy()
                     }
                 }.bind(this))
             }

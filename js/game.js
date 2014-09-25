@@ -2,17 +2,22 @@ define(function( require ){
     var game = new Phaser.Game( window.innerWidth, window.innerHeight, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
     var gs = require("gs");
     var config = require('config'); 
+    var stats;
     
     function preload() {    
         game.load.image('a1', 'assets/a1.png');
         game.load.image('a2', 'assets/a2.png');
         game.load.image('a3', 'assets/a3.png');
         game.load.image('a4', 'assets/a4.png');
+        game.load.image('bonus-plane', 'assets/bonus-plane.png');
+        game.load.image('bonus-turn', 'assets/bonus-turn.png');
     }
 
     function create() {
         game.stage.backgroundColor = '#FFF';
-
+        
+        gs.setGameObj( game );
+        
         gs.createPlanes( 2, game );
 
         gs.setCurrent( 0 );
@@ -21,6 +26,14 @@ define(function( require ){
         
         game.input.onDown.add(onMouseDown, this);
         game.input.onUp.add(onMouseUp, this);
+        
+        stats = gs.planes.map( function( plane, index ){ 
+            return game.add.text( 10 , 10 + index * 23, gs.getPlaneStateString( index ), {
+                font: "22px Arial",
+                fill: gs.planes[index].color,
+                align: "left"
+            } )
+        })
 
     }
 
@@ -50,6 +63,10 @@ define(function( require ){
         gs.processCollisions();
         
         gs.planeAnimations();
+        
+        stats.map( function( stat, index ){
+            stat.setText( gs.getPlaneStateString( index ) );
+        })
     }
 
     function render(){
