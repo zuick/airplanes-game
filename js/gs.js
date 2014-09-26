@@ -128,7 +128,7 @@ define( function( require ){
             if( center.x <= 0 ||
                 center.x >= game.world.width || 
                 center.y <= 0 ||
-                center.y + center.height >= game.world.height ) return true;
+                center.y >= game.world.height ) return true;
             return false;
         }
         ,decreaseForce: function( sprite, game ){
@@ -166,9 +166,10 @@ define( function( require ){
                 this.decreaseForce( this.current, game );
                 
                 if( this.outBounds( this.current, game ) ) {
-                    this.setDamage( this.current );
+                    var plane = this.current;
                     this.waiting();
                     this.nextTurn();
+                    this.setDamage( plane );
                 }
                 
                 if( this.current.force <= 0 ){
