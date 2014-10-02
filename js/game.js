@@ -14,8 +14,8 @@ define(function( require ){
     }
 
     function create() {
-        game.stage.backgroundColor = '#FFF';
-        
+        game.stage.backgroundColor = '#ede4d1';
+
         gs.setGameObj( game );
         
         var playes = ( window.location.search ) ? window.location.search.match(/p=([0-9])/)[1] : 2;
