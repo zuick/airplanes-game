@@ -6,6 +6,7 @@ define( function( require ){
     return {
         planes: []    
         ,bonuses: []
+        ,backItems: []
         ,turns: 0
         ,currentIndex: 0
         ,currentLabel: new Phaser.Circle( 0, 0, 48 )
@@ -83,6 +84,13 @@ define( function( require ){
                 bonus.anchor.setTo(0.5, 0.5);
                 bonus.name = bonusName;
                 this.bonuses.push( bonus );
+            }
+        }
+        ,createBackgroundItems: function(){
+            for( var i = 0; i < config.backItems.maxCount; i++ ){
+                var x = Math.random() * this.game.world.width;
+                var y = Math.random() * this.game.world.height;
+                this.backItems.push( this.game.add.sprite( x, y, 'tree' ) );                
             }
         }
         ,setCurrent: function( index ){

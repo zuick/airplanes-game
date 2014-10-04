@@ -6,9 +6,10 @@ define( function(){
         }
         ,slingshot:{
             power: 4
-            ,labelColor: "#BBB"
+            ,labelColor: "#000"
         }
         ,bonuses: [ "bonus-plane", "bonus-turn" ]
+        ,backItems: { maxCount: 10 }
         ,planes:{
             hitDistance: 7
             ,lives: 3

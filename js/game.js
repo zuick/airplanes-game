@@ -11,12 +11,17 @@ define(function( require ){
         game.load.spritesheet('a4', 'assets/a4.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
         game.load.image('bonus-plane', 'assets/bonus-plane.png');
         game.load.image('bonus-turn', 'assets/bonus-turn.png');
+        game.load.image('tree', 'assets/fields-tree-1.png');
+        game.load.image('back', 'assets/fields-background.png');
     }
 
     function create() {
         game.stage.backgroundColor = '#ede4d1';
-
+        game.add.tileSprite( 0, 0, game.world.width, game.world.height, 'back' );
+        
         gs.setGameObj( game );
+        
+        gs.createBackgroundItems();
         
         var playes = ( window.location.search ) ? window.location.search.match(/p=([0-9])/)[1] : 2;
         gs.createPlanes( playes, game );
