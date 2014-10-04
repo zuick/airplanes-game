@@ -5,10 +5,10 @@ define(function( require ){
     var stats;
     
     function preload() {    
-        game.load.image('a1', 'assets/a1.png');
-        game.load.image('a2', 'assets/a2.png');
-        game.load.image('a3', 'assets/a3.png');
-        game.load.image('a4', 'assets/a4.png');
+        game.load.spritesheet('a1', 'assets/a1.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
+        game.load.spritesheet('a2', 'assets/a2.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
+        game.load.spritesheet('a3', 'assets/a3.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
+        game.load.spritesheet('a4', 'assets/a4.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
         game.load.image('bonus-plane', 'assets/bonus-plane.png');
         game.load.image('bonus-turn', 'assets/bonus-turn.png');
     }

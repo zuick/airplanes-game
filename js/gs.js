@@ -43,15 +43,30 @@ define( function( require ){
                 }
                 var plane = null;
                 
-                plane = game.add.sprite( x, y, settings[i].sprite );                    
+                plane = game.add.sprite( x, y, settings[i].sprite, 0 );
                 plane.color = settings[i].color;
                 plane.alive = true;
                 plane.health = config.planes.lives;
                 plane.basePosition = { x: x, y: y, r: r };
                 game.physics.enable( plane, Phaser.Physics.ARCADE);    
-                plane.angle = r;
                 plane.anchor.setTo(0.5, 0.5);
                 plane.additionalTurn = false;
+                
+                plane.apRotate = function( a ){
+                    if( a >= 0 && a < 45 || a > 315 && a <= 360 ){
+                        this.frame = 0;
+                    }else if( a >= 45 && a < 135 ){
+                        this.frame = 1;
+                    }else if( a >= 135 && a < 225 ){
+                        this.frame = 2;
+                    }else if( a >= 225 && a < 315 ){
+                        this.frame = 3;
+                    }
+                                        
+                    this.angle = a;
+                }
+                
+                plane.apRotate( r );
                 this.planes.push( plane );            
             }
         }

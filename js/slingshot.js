@@ -52,7 +52,11 @@ define( function( require ){
                 this.label.y = slingshotEndY;
                 this.setFinish( slingshotEndX, slingshotEndY );
                 
-                plane.angle = slingshotStrength.angle;
+                plane.apRotate( slingshotStrength.angle );
+                
+                
+                
+                
             }
         }
     }    
