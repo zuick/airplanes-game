@@ -188,17 +188,18 @@ define( function( require ){
             if( this.isProcessing() ){            
                 this.decreaseForce( this.current, game );
                 
-                if( this.outBounds( this.current, game ) ) {
-                    var plane = this.current;
-                    this.waiting();
-                    this.nextTurn();
-                    this.setDamage( plane );
-                }
                 
                 if( this.current.force <= 0 ){
                     this.waiting();
                     if( !this.current.additionalTurn ) this.nextTurn();
                     else this.current.additionalTurn = false;
+                }
+                
+                if( this.outBounds( this.current, game ) ) {
+                    var plane = this.current;
+                    this.waiting();
+                    this.nextTurn();
+                    this.setDamage( plane );
                 }
             }
         }
