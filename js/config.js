@@ -1,17 +1,36 @@
 define( function(){
     return {
         world: {
-            friction: 3       
-            ,bonusFrequence: 2
+            friction: 5   
+            ,bonusFrequence: 1
         }
         ,slingshot:{
-            power: 4
+            power: 5
             ,labelColor: "#000"
         }
-        ,bonuses: [ "bonus-plane", "bonus-turn" ]
+        ,bonuses: {
+            maxCount: 6
+            ,maxCountInTurn: 3
+            ,hitDistance: 12
+            ,settings: [
+                {
+                    sprite: "bonus-plane"
+                    ,name: "plane"                    
+                }
+                ,{
+                    sprite: "bonus-turn"
+                    ,name: "turn"                    
+                }
+                ,{
+                    sprite: "bonus-force"
+                    ,name: "force"
+                    ,value: 50
+                }
+            ]
+        }
         ,backItems: { maxCount: 10 }
         ,planes:{
-            hitDistance: 7
+            hitDistance: 12
             ,lives: 3
             ,defaultSprite: 'a1'
             ,dieAnimationScaleStep: 0.07

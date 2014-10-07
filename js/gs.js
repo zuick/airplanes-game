@@ -51,7 +51,9 @@ define( function( require ){
                 plane.basePosition = { x: x, y: y, r: r };
                 game.physics.enable( plane, Phaser.Physics.ARCADE);    
                 plane.anchor.setTo(0.5, 0.5);
+                // bonus init
                 plane.additionalTurn = false;
+                plane.slingshotMagnifier = false;
                 
                 plane.apRotate = function( a ){
                     if( a >= 0 && a < 45 || a > 315 && a <= 360 ){
@@ -72,18 +74,21 @@ define( function( require ){
             }
         }
         ,createBonuses: function(){
-            if( this.bonuses.length < 2 ){
-                var bonusName = config.bonuses[ Math.floor( Math.random() * 2 ) ];
-                var x = Math.floor( Math.random() * this.game.world.width )
-                var y = Math.floor( Math.random() * this.game.world.height )
-                
-                var bonus = this.game.add.sprite( x, y, bonusName );
-                this.game.physics.enable( bonus, Phaser.Physics.ARCADE);   
-                bonus.body.allowRotation = true;
-                bonus.body.angularVelocity = 30;
-                bonus.anchor.setTo(0.5, 0.5);
-                bonus.name = bonusName;
-                this.bonuses.push( bonus );
+            if( this.bonuses.length < config.bonuses.maxCount ){
+                for( var i = 0; i < config.bonuses.maxCountInTurn && i < config.bonuses.maxCount; i++ ){
+                    var bonusSettings = config.bonuses.settings[ Math.floor( Math.random() * config.bonuses.settings.length ) ];
+                    var x = Math.floor( Math.random() * this.game.world.width )
+                    var y = Math.floor( Math.random() * this.game.world.height )
+
+                    var bonus = this.game.add.sprite( x, y, bonusSettings.sprite );
+                    this.game.physics.enable( bonus, Phaser.Physics.ARCADE);   
+                    bonus.body.allowRotation = true;
+                    bonus.body.angularVelocity = 30;
+                    bonus.anchor.setTo(0.5, 0.5);
+                    bonus.name = bonusSettings.name;
+                    if( bonusSettings.value ) bonus.value = bonusSettings.value;
+                    this.bonuses.push( bonus );                    
+                }
             }
         }
         ,createBackgroundItems: function(){
@@ -120,6 +125,8 @@ define( function( require ){
         ,isProcessing: function(){ return this.state === "processing"; }
         ,isWaiting: function(){ return this.state === "waiting"; }
         ,nextTurn: function(){
+            if( this.current.slingshotMagnifier && this.current.slingshotMagnifier.used ) this.current.slingshotMagnifier = false;
+            
             if( this.currentIndex + 1 >= this.planes.length ){
                 this.setCurrent( 0 );
             }else{
@@ -129,10 +136,12 @@ define( function( require ){
             if( !this.current.alive ) this.nextTurn();
         }
         ,fire: function( angle, force ){
-            force *= this.slingshot.power;
+            force *= this.slingshot.power;            
             this.current.angle = angle;                
             this.current.force = force;
             this.setVelocityToSprite( this.current, angle, force );
+            
+            if( this.current.slingshotMagnifier && !this.current.slingshotMagnifier.used ) this.current.slingshotMagnifier.used = true;
         }
         ,getVelocity: function( angle, force ){
             var alpha = Math.PI / 180 * angle;
@@ -237,9 +246,10 @@ define( function( require ){
                 }.bind(this))
                 
                 this.bonuses.map( function( bonus, index ){
-                    if( this.getDistance( bonus, this.current ) < config.planes.hitDistance ){
-                        if( bonus.name == "bonus-turn" ) this.current.additionalTurn = true;
-                        else if( bonus.name == "bonus-plane" )  this.current.health++;
+                    if( this.getDistance( bonus, this.current ) < config.bonuses.hitDistance ){
+                        if( bonus.name == "turn" ) this.current.additionalTurn = true;
+                        else if( bonus.name == "plane" )  this.current.health++;
+                        else if( bonus.name == "force" )  this.current.slingshotMagnifier = { value: bonus.value, used: false };
                         
                         this.bonuses.splice( index, 1 );
                         bonus.destroy()

@@ -38,10 +38,12 @@ define( function( require ){
                 var slingshotStrength = this.getPulling( pointerX, pointerY );
 
                 var slingshotEndX, slingshotEndY = 0;
-
-                if ( slingshotStrength.length > this.maxLength ){            
-                    slingshotEndX = this.start.x + this.maxLength * Math.cos( utils.toRad( slingshotStrength.angle ) + Math.PI );
-                    slingshotEndY = this.start.y + this.maxLength * Math.sin( utils.toRad( slingshotStrength.angle ) + Math.PI );            
+                var maxLength = this.maxLength;
+                if( plane.slingshotMagnifier && typeof plane.slingshotMagnifier.value === "number" ) maxLength += plane.slingshotMagnifier.value;              
+                
+                if ( slingshotStrength.length > maxLength ){            
+                    slingshotEndX = this.start.x + maxLength * Math.cos( utils.toRad( slingshotStrength.angle ) + Math.PI );
+                    slingshotEndY = this.start.y + maxLength * Math.sin( utils.toRad( slingshotStrength.angle ) + Math.PI );            
                 }else{
                     slingshotEndX = pointerX;
                     slingshotEndY = pointerY;            
