@@ -35,11 +35,13 @@ define(function( require ){
         game.input.onUp.add(onMouseUp, this);
         
         stats = gs.planes.map( function( plane, index ){ 
-            return game.add.text( 10 , 10 + index * 23, gs.getPlaneStateString( index ), {
-                font: "22px Arial",
+            var text = game.add.text( 20 , 15 + index * 25, gs.getPlaneStateString( index ), {
+                font: "25px Arial",
                 fill: gs.planes[index].color,
                 align: "left"
             } )
+            text.setShadow(-1, 1, 'rgba(0,0,0,0.5)', 1);
+            return text;
         })
 
     }

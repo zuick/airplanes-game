@@ -28,7 +28,7 @@ define( function(){
                 }
             ]
         }
-        ,backItems: { maxCount: 10 }
+        ,backItems: { maxCount: 0 }
         ,planes:{
             hitDistance: 12
             ,lives: 3
