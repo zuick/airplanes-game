@@ -33,7 +33,8 @@ define( function(){
             hitDistance: 12
             ,lives: 3
             ,defaultSprite: 'a1'
-            ,dieAnimationScaleStep: 0.07
+            ,dieAnimationScaleStep: 0.05
+            ,dieAnimationAngleStep: 10
             ,spriteSize: 48
             ,settings: [
                 {

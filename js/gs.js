@@ -2,6 +2,9 @@ define( function( require ){
     var Slingshot = require('slingshot');
     var config = require('config');    
     var utils = require('utils');
+    var Plane = require('models/plane');
+    
+
     
     return {
         planes: []    
@@ -15,8 +18,8 @@ define( function( require ){
         ,setGameObj: function( game ){ this.game = game }
         ,createPlanes: function( count, game ){
             var settings = config.planes.settings;
-            if( count > settings.length ) count = settings.length;
-
+            if( count > settings.length ) count = settings.length;           
+    
             for( var i = 0; i < count; i++ ){
                 var x, y, r = 0;
                 switch( settings[i].pos ){
@@ -42,34 +45,8 @@ define( function( require ){
                         break;
                     default: break;
                 }
-                var plane = null;
-                
-                plane = game.add.sprite( x, y, settings[i].sprite, 0 );
-                plane.color = settings[i].color;
-                plane.alive = true;
-                plane.health = config.planes.lives;
-                plane.basePosition = { x: x, y: y, r: r };
-                game.physics.enable( plane, Phaser.Physics.ARCADE);    
-                plane.anchor.setTo(0.5, 0.5);
-                // bonus init
-                plane.additionalTurn = false;
-                plane.slingshotMagnifier = false;
-                
-                plane.apRotate = function( a ){
-                    if( a >= 0 && a < 45 || a > 315 && a <= 360 ){
-                        this.frame = 0;
-                    }else if( a >= 45 && a < 135 ){
-                        this.frame = 1;
-                    }else if( a >= 135 && a < 225 ){
-                        this.frame = 2;
-                    }else if( a >= 225 && a < 315 ){
-                        this.frame = 3;
-                    }
-                                        
-                    this.angle = a;
-                }
-                
-                plane.apRotate( r );
+                var plane = new Plane( game, x, y, r, settings[i].sprite, settings[i].color );
+                                
                 this.planes.push( plane );            
             }
         }
@@ -217,7 +194,7 @@ define( function( require ){
                 if( plane.dieAnimation ) {
                     if( plane.scale.x > 0 ){
                         plane.scale.setTo( plane.scale.x - config.planes.dieAnimationScaleStep, plane.scale.x - config.planes.dieAnimationScaleStep )
-                        plane.angle += 7;
+                        plane.rotate( plane.angle + config.planes.dieAnimationAngleStep );
                     }else{
                         if( plane.health == 0 ){
                             plane.exists = false;
@@ -227,7 +204,7 @@ define( function( require ){
                             plane.scale.setTo( 1, 1 );
                             plane.body.x = plane.basePosition.x - plane.body.width / 2;
                             plane.body.y = plane.basePosition.y - plane.body.height / 2;
-                            plane.angle = plane.basePosition.r;                            
+                            plane.rotate( plane.basePosition.r )
                         }
                     }
                 }

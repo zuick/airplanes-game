@@ -54,7 +54,7 @@ define( function( require ){
                 this.label.y = slingshotEndY;
                 this.setFinish( slingshotEndX, slingshotEndY );
                 
-                plane.apRotate( slingshotStrength.angle );
+                plane.rotate( slingshotStrength.angle );
                 
                 
                 
