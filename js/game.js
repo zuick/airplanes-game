@@ -1,6 +1,6 @@
 define(function( require ){    
     var game = new Phaser.Game( window.innerWidth, window.innerHeight, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
-    var gs = require("gs");
+    var gs = null;
     var config = require('config'); 
     var stats;
     
@@ -21,12 +21,11 @@ define(function( require ){
         game.stage.backgroundColor = '#ede4d1';
         game.add.tileSprite( 0, 0, game.world.width, game.world.height, 'back' );
         
-        gs.setGameObj( game );
-        
+        gs = require("gs")(game);
         gs.createBackgroundItems();
         
         var playes = ( window.location.search ) ? window.location.search.match(/p=([0-9])/)[1] : 2;
-        gs.createPlanes( playes, game );
+        gs.createPlanes( playes );
 
         gs.setCurrent( 0 );
 

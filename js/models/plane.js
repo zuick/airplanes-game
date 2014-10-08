@@ -9,7 +9,7 @@ define( function( require ){
         this.shadow.scale.setTo( config.planes.shadow.scale );
         game.physics.enable( this.shadow, Phaser.Physics.ARCADE);
         
-        this.original = game.add.sprite( x, y, spriteKey );
+        this.original = game.add.sprite( x, y, spriteKey );        
         this.original.alive = true;
         game.physics.enable( this.original, Phaser.Physics.ARCADE);
                 
@@ -95,7 +95,11 @@ define( function( require ){
                 return this.original[ propertyName ];
             }.bind(this)
         }
-                
+        
+        this.bringToTop = function(){
+            this.original.bringToTop();
+        }
+        
         this.__defineGetter__("body", this.getFromOriginal('body') )
         this.__defineGetter__("scale", this.getFromOriginal('scale') )
         this.__defineGetter__("angle", this.getFromOriginal('angle') )
