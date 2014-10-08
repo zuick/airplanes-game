@@ -3,6 +3,7 @@ define( function(){
         world: {
             friction: 5   
             ,bonusFrequence: 1
+            ,wreckAlpha: 0.5
         }
         ,slingshot:{
             power: 5
@@ -33,9 +34,16 @@ define( function(){
             hitDistance: 12
             ,lives: 3
             ,defaultSprite: 'a1'
-            ,dieAnimationScaleStep: 0.05
+            ,dieAnimationScaleStep: 0.025
             ,dieAnimationAngleStep: 10
             ,spriteSize: 48
+            ,shadow: {
+                dx: -50
+                ,dy: 50
+                ,tint: 0
+                ,alpha: 0.3
+                ,scale: 0.4
+            }
             ,settings: [
                 {
                     sprite: 'a1'

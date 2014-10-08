@@ -84,8 +84,7 @@ define( function( require ){
         ,setDamage: function( plane ){
             plane.health--;
             plane.dieAnimation = true;
-            plane.body.velocity.x = 0;
-            plane.body.velocity.y = 0;
+            plane.setVelocity( 0, 0 );
         }
         ,processing: function(){ 
             this.currentLabel.setTo( -this.currentLabel.diameter, -this.currentLabel.diameter, this.currentLabel.diameter )
@@ -128,8 +127,7 @@ define( function( require ){
         }
         ,setVelocityToSprite: function( sprite, angle, force ){
             var newVelocity = this.getVelocity( angle, force );
-            sprite.body.velocity.x = newVelocity.x;
-            sprite.body.velocity.y = newVelocity.y;
+            sprite.setVelocity( newVelocity.x, newVelocity.y );            
         }
         ,outBounds: function( sprite, game ){       
             var center = this.getCenter( sprite );
@@ -146,8 +144,7 @@ define( function( require ){
                 if( sprite.force < 0 ) sprite.force = 0;  
                 this.setVelocityToSprite( sprite, sprite.angle, sprite.force );
             }else{
-                sprite.body.velocity.x = 0;
-                sprite.body.velocity.y = 0; 
+                sprite.setVelocity( 0, 0 ); 
                 sprite.force = 0;
             }
         }
@@ -191,23 +188,7 @@ define( function( require ){
         }
         ,planeAnimations: function(){
             this.planes.map( function( plane ){
-                if( plane.dieAnimation ) {
-                    if( plane.scale.x > 0 ){
-                        plane.scale.setTo( plane.scale.x - config.planes.dieAnimationScaleStep, plane.scale.x - config.planes.dieAnimationScaleStep )
-                        plane.rotate( plane.angle + config.planes.dieAnimationAngleStep );
-                    }else{
-                        if( plane.health == 0 ){
-                            plane.exists = false;
-                            plane.alive = false;
-                        }else{
-                            plane.dieAnimation = false;
-                            plane.scale.setTo( 1, 1 );
-                            plane.body.x = plane.basePosition.x - plane.body.width / 2;
-                            plane.body.y = plane.basePosition.y - plane.body.height / 2;
-                            plane.rotate( plane.basePosition.r )
-                        }
-                    }
-                }
+                plane.playAnimations();
             })
         }
         ,processCollisions: function(){

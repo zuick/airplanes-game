@@ -9,6 +9,7 @@ define(function( require ){
         game.load.spritesheet('a2', 'assets/a2.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
         game.load.spritesheet('a3', 'assets/a3.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
         game.load.spritesheet('a4', 'assets/a4.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
+        game.load.spritesheet('exp', 'assets/explosion.png', 24, 24, 6 );
         game.load.image('bonus-plane', 'assets/bonus-plane.png');
         game.load.image('bonus-turn', 'assets/bonus-turn.png');
         game.load.image('bonus-force', 'assets/bonus-force.png');
