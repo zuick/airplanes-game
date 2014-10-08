@@ -23,6 +23,10 @@ define( function(){
                     ,name: "turn"                    
                 }
                 ,{
+                    sprite: "bonus-shild"
+                    ,name: "shild"                    
+                }
+                ,{
                     sprite: "bonus-force"
                     ,name: "force"
                     ,value: 50

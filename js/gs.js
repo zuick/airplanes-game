@@ -54,7 +54,7 @@ define( function( require ){
             }
             ,createBonuses: function(){
                 if( this.bonuses.length < config.bonuses.maxCount ){
-                    for( var i = 0; i < config.bonuses.maxCountInTurn && i < config.bonuses.maxCount; i++ ){
+                    for( var i = 0; i < config.bonuses.maxCountInTurn && this.bonuses.length < config.bonuses.maxCount; i++ ){
                         var bonusSettings = config.bonuses.settings[ Math.floor( Math.random() * config.bonuses.settings.length ) ];
                         var x = Math.floor( Math.random() * game.world.width )
                         var y = Math.floor( Math.random() * game.world.height )
