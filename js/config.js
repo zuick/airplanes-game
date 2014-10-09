@@ -13,27 +13,43 @@ define( function(){
             maxCount: 6
             ,maxCountInTurn: 3
             ,hitDistance: 12
+            ,applyTime: 200
             ,settings: [
+//                {
+//                    sprite: "bonus-plane"
+//                    ,name: "plane"
+//                    ,start: "onTake"
+//                    ,end: "onTake"
+//                }
+//                ,{
+//                    sprite: "bonus-turn"
+//                    ,name: "turn"
+//                    ,start: "onTake"
+//                    ,end: "onTake"
+//                }
+//                ,{
+//                    sprite: "bonus-force"
+//                    ,name: "force"
+//                    ,start: "onStartTurn"
+//                    ,end: "onFire"
+//                    ,value: 50
+//                }
                 {
-                    sprite: "bonus-plane"
-                    ,name: "plane"                    
-                }
-                ,{
-                    sprite: "bonus-turn"
-                    ,name: "turn"                    
-                }
-                ,{
                     sprite: "bonus-shild"
-                    ,name: "shild"                    
-                }
-                ,{
-                    sprite: "bonus-force"
-                    ,name: "force"
-                    ,value: 50
+                    ,name: "shild"
+                    ,start: "onLeaveTurn"
+                    ,end: "onStartTurn"
                 }
             ]
         }
         ,backItems: { maxCount: 0 }
+        ,shadows: {
+            dx: -50
+            ,dy: 50
+            ,tint: 0
+            ,alpha: 0.3
+            ,scale: 0.4
+        }
         ,planes:{
             hitDistance: 12
             ,lives: 3
@@ -41,13 +57,6 @@ define( function(){
             ,dieAnimationScaleStep: 0.025
             ,dieAnimationAngleStep: 10
             ,spriteSize: 48
-            ,shadow: {
-                dx: -50
-                ,dy: 50
-                ,tint: 0
-                ,alpha: 0.3
-                ,scale: 0.4
-            }
             ,settings: [
                 {
                     sprite: 'a1'

@@ -3,6 +3,7 @@ define( function( require ){
     var config = require('config');    
     var utils = require('utils');
     var Plane = require('models/plane');
+    var Bonus = require('models/bonus');
     
     return function( game ){        
         return {
@@ -49,24 +50,24 @@ define( function( require ){
                     this.objectsGroup.add( plane.original )
                     this.shadowsGroup.add( plane.shadow )
                     
-                    this.planes.push( plane );            
+                    this.planes.push( plane );    
+                    
                 }
+                if( count > 0 ) this.setCurrent( 0 );
             }
             ,createBonuses: function(){
                 if( this.bonuses.length < config.bonuses.maxCount ){
                     for( var i = 0; i < config.bonuses.maxCountInTurn && this.bonuses.length < config.bonuses.maxCount; i++ ){
-                        var bonusSettings = config.bonuses.settings[ Math.floor( Math.random() * config.bonuses.settings.length ) ];
+                        var settings = config.bonuses.settings[ Math.floor( Math.random() * config.bonuses.settings.length ) ];
                         var x = Math.floor( Math.random() * game.world.width )
                         var y = Math.floor( Math.random() * game.world.height )
 
-                        var bonus = game.add.sprite( x, y, bonusSettings.sprite );
-                        game.physics.enable( bonus, Phaser.Physics.ARCADE);   
-                        bonus.body.allowRotation = true;
-                        bonus.body.angularVelocity = 30;
-                        bonus.anchor.setTo(0.5, 0.5);
-                        bonus.name = bonusSettings.name;
-                        if( bonusSettings.value ) bonus.value = bonusSettings.value;
-                        this.bonuses.push( bonus );                    
+                        var bonus = new Bonus( game, x, y, settings );
+                        
+                        this.objectsGroup.add( bonus.original )
+                        this.shadowsGroup.add( bonus.shadow )
+                        
+                        this.bonuses.push( bonus );
                     }
                 }
             }
@@ -79,15 +80,19 @@ define( function( require ){
             }
             ,setCurrent: function( index ){
                 if( this.planes[index] ){
+                    if( this.current ) this.current.leaveTurn();
+                    this.planes[index].onStartTurn();
                     this.current = this.planes[index];
                     this.currentIndex = index;
                     this.current.bringToTop();
                 }        
             }
             ,setDamage: function( plane ){
+                
                 plane.health--;
                 plane.dieAnimation = true;
-                plane.setVelocity( 0, 0 );
+                plane.setVelocity( 0, 0 );                    
+                
             }
             ,processing: function(){ 
                 this.currentLabel.setTo( -this.currentLabel.diameter, -this.currentLabel.diameter, this.currentLabel.diameter )
@@ -104,8 +109,11 @@ define( function( require ){
             ,isProcessing: function(){ return this.state === "processing"; }
             ,isWaiting: function(){ return this.state === "waiting"; }
             ,nextTurn: function(){
-                if( this.current.slingshotMagnifier && this.current.slingshotMagnifier.used ) this.current.slingshotMagnifier = false;
-
+                if( this.current.additionalTurn ) {
+                    this.current.additionalTurn = false;
+                    return;
+                }
+                
                 if( this.currentIndex + 1 >= this.planes.length ){
                     this.setCurrent( 0 );
                 }else{
@@ -120,7 +128,7 @@ define( function( require ){
                 this.current.force = force;
                 this.setVelocityToSprite( this.current, angle, force );
 
-                if( this.current.slingshotMagnifier && !this.current.slingshotMagnifier.used ) this.current.slingshotMagnifier.used = true;
+                this.current.onFire();
             }
             ,getVelocity: function( angle, force ){
                 var alpha = Math.PI / 180 * angle;
@@ -177,8 +185,8 @@ define( function( require ){
 
                     if( this.current.force <= 0 ){
                         this.waiting();
-                        if( !this.current.additionalTurn ) this.nextTurn();
-                        else this.current.additionalTurn = false;
+                        if( !this.current.bonuses.turn ) this.nextTurn();
+                        else this.current.bonuses.turn = false;
                     }
 
                     if( this.outBounds( this.current ) ) {
@@ -202,18 +210,14 @@ define( function( require ){
 
                     enemies.map( function( plane ){
                         if( this.getDistance( plane, this.current ) < config.planes.hitDistance ){ // success attack
-                            if( !plane.dieAnimation ) this.setDamage( plane );                        
+                            if( !plane.dieAnimation && !plane.hasShild() ) this.setDamage( plane );                        
                         }
                     }.bind(this))
 
                     this.bonuses.map( function( bonus, index ){
                         if( this.getDistance( bonus, this.current ) < config.bonuses.hitDistance ){
-                            if( bonus.name == "turn" ) this.current.additionalTurn = true;
-                            else if( bonus.name == "plane" )  this.current.health++;
-                            else if( bonus.name == "force" )  this.current.slingshotMagnifier = { value: bonus.value, used: false };
-
+                            this.current.applyBonus( bonus );
                             this.bonuses.splice( index, 1 );
-                            bonus.destroy()
                         }
                     }.bind(this))
                 }

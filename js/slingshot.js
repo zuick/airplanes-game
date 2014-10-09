@@ -38,8 +38,7 @@ define( function( require ){
                 var slingshotStrength = this.getPulling( pointerX, pointerY );
 
                 var slingshotEndX, slingshotEndY = 0;
-                var maxLength = this.maxLength;
-                if( plane.slingshotMagnifier && typeof plane.slingshotMagnifier.value === "number" ) maxLength += plane.slingshotMagnifier.value;              
+                var maxLength = this.maxLength + plane.getSlingshotMagnifier()                           
                 
                 if ( slingshotStrength.length > maxLength ){            
                     slingshotEndX = this.start.x + maxLength * Math.cos( utils.toRad( slingshotStrength.angle ) + Math.PI );

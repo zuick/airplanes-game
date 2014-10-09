@@ -10,6 +10,7 @@ define(function( require ){
         game.load.spritesheet('a3', 'assets/a3.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
         game.load.spritesheet('a4', 'assets/a4.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
         game.load.spritesheet('exp', 'assets/explosion.png', 24, 24, 6 );
+        game.load.image('shild', 'assets/shild.png');
         game.load.image('bonus-plane', 'assets/bonus-plane.png');
         game.load.image('bonus-turn', 'assets/bonus-turn.png');
         game.load.image('bonus-force', 'assets/bonus-force.png');
@@ -27,8 +28,6 @@ define(function( require ){
         
         var playes = ( window.location.search ) ? window.location.search.match(/p=([0-9])/)[1] : 2;
         gs.createPlanes( playes );
-
-        gs.setCurrent( 0 );
 
         gs.waiting();
         
