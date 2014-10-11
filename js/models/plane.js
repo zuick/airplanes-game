@@ -15,6 +15,7 @@ define( function( require ){
         
         this.bonuses = [];
         
+        this.onAnimationEnd = false;
         this.dieAnimation = false;
         this.original.anchor.setTo(0.5, 0.5);
 
@@ -78,8 +79,7 @@ define( function( require ){
                     var explosion = game.add.sprite( this.original.x, this.original.y, "exp", 0 );
                     explosion.anchor.setTo(0.5, 0.5);
                     explosion.animations.add("bang");
-                    explosion.animations.play("bang", 16, false);
-                    
+                    explosion.animations.play("bang", 16, false, true);                    
                     
                     if( this.health == 0 ){
                         this.exists = false;
@@ -88,6 +88,11 @@ define( function( require ){
                         this.reanimate();
                     }
                     
+                    if( typeof this.onAnimationEnd === "function" ){
+                        this.onAnimationEnd();
+                        this.onAnimationEnd = false;
+                        
+                    }
                 }
             }
         }

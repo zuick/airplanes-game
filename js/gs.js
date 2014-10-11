@@ -86,6 +86,10 @@ define( function( require ){
                     this.current = this.planes[index];
                     this.currentIndex = index;
                     this.current.bringToTop();
+                    
+                    this.currentLabel.x = this.current.x;
+                    this.currentLabel.y = this.current.y;
+                    this.currentLabel.fadeIn()
                 }        
             }
             ,setDamage: function( plane ){
@@ -101,9 +105,6 @@ define( function( require ){
                 this.state = "processing";
             }
             ,waiting: function(){
-                this.currentLabel.x = this.current.x;
-                this.currentLabel.y = this.current.y;
-                this.currentLabel.fadeIn()
                 this.turns++;
                 if( this.turns % config.world.bonusFrequence == 0 ){
                     this.createBonuses()
@@ -121,7 +122,7 @@ define( function( require ){
                 if( this.currentIndex + 1 >= this.planes.length ){
                     this.setCurrent( 0 );
                 }else{
-                    this.setCurrent( this.currentIndex + 1 );            
+                    this.setCurrent( this.currentIndex + 1 );
                 }
 
                 if( !this.current.alive ) this.nextTurn();
@@ -194,9 +195,8 @@ define( function( require ){
                     }
 
                     if( this.outBounds( this.current ) ) {
-                        var plane = this.current;
-                        this.nextTurn();
-                        this.setDamage( plane );
+                        this.current.onAnimationEnd = this.nextTurn.bind(this);
+                        this.setDamage( this.current );
                         this.waiting();
                     }
                 }
@@ -204,7 +204,7 @@ define( function( require ){
             ,planeAnimations: function(){
                 this.planes.map( function( plane ){
                     plane.playAnimations();
-                })
+                }.bind(this))
             }
             ,processCollisions: function(){
                 if( this.isProcessing() ){

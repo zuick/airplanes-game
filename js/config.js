@@ -70,7 +70,7 @@ define( function(){
                     sprite: 'a2'
                     ,color: '#a6ad42'
                     ,pos: 'right'
-                    ,offset: 130
+                    ,offset: 20
                 }
                 ,{
                     sprite: 'a3'
