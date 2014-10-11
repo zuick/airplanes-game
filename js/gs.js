@@ -1,9 +1,10 @@
 define( function( require ){
-    var Slingshot = require('slingshot');
     var config = require('config');    
     var utils = require('utils');
+    var Slingshot = require('models/slingshot');
     var Plane = require('models/plane');
     var Bonus = require('models/bonus');
+    var getTurnLabel = require('models/turn-label');
     
     return function( game ){        
         return {
@@ -14,8 +15,8 @@ define( function( require ){
             ,backItems: []
             ,turns: 0
             ,currentIndex: 0
-            ,currentLabel: new Phaser.Circle( 0, 0, 48 )
-            ,slingshot: new Slingshot( { power: config.slingshot.power } )
+            ,currentLabel: getTurnLabel( game, 0, 0 )
+            ,slingshot: new Slingshot( game )
             ,createPlanes: function( count ){
                 var settings = config.planes.settings;
                 if( count > settings.length ) count = settings.length;           
@@ -95,11 +96,14 @@ define( function( require ){
                 
             }
             ,processing: function(){ 
-                this.currentLabel.setTo( -this.currentLabel.diameter, -this.currentLabel.diameter, this.currentLabel.diameter )
+                this.currentLabel.fadeOut()
                 this.slingshot.line.setTo( -1, -1, -1, -1 );
                 this.state = "processing";
             }
-            ,waiting: function(){ 
+            ,waiting: function(){
+                this.currentLabel.x = this.current.x;
+                this.currentLabel.y = this.current.y;
+                this.currentLabel.fadeIn()
                 this.turns++;
                 if( this.turns % config.world.bonusFrequence == 0 ){
                     this.createBonuses()
@@ -127,7 +131,7 @@ define( function( require ){
                 this.current.angle = angle;                
                 this.current.force = force;
                 this.setVelocityToSprite( this.current, angle, force );
-
+                        
                 this.current.onFire();
             }
             ,getVelocity: function( angle, force ){
@@ -184,16 +188,16 @@ define( function( require ){
 
 
                     if( this.current.force <= 0 ){
-                        this.waiting();
                         if( !this.current.bonuses.turn ) this.nextTurn();
                         else this.current.bonuses.turn = false;
+                        this.waiting();
                     }
 
                     if( this.outBounds( this.current ) ) {
                         var plane = this.current;
-                        this.waiting();
                         this.nextTurn();
                         this.setDamage( plane );
+                        this.waiting();
                     }
                 }
             }

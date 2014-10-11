@@ -7,7 +7,8 @@ define( function(){
         }
         ,slingshot:{
             power: 5
-            ,labelColor: "#000"
+            ,labelColor: "#e5ffea"
+            ,maxLength: 75
         }
         ,bonuses: {
             maxCount: 6

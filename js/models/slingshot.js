@@ -1,14 +1,18 @@
 define( function( require ){
     var utils = require('utils'); 
+    var config = require('config');
     
-    return function Slingshot( options ){
+    return function Slingshot( game ){
+        
         this.start = { x: 0, y: 0 };
         this.finish = { x: 0, y: 0 }; 
         this.active = false;
         this.line = false;
-        this.maxLength = options.maxLength || 75;
-        this.label = new Phaser.Circle( 0, 0, options.labelSize || 15 );
-        this.power = options.power || 1;
+        this.maxLength = config.slingshot.maxLength;
+        this.label = game.add.sprite( 0, 0, "slingshot-handle" );
+        this.label.anchor.setTo( 0.5, 0.5 );
+        this.label.alpha = 0;
+        this.power = config.slingshot.power;
         this.setStart = function( x, y, x2, y2 ){
             this.start.x = x;
             this.start.y = y;
@@ -55,10 +59,15 @@ define( function( require ){
                 
                 plane.rotate( slingshotStrength.angle );
                 
-                
-                
-                
             }
+        }
+        this.activate = function(){
+            this.active = true;
+            this.label.alpha = 1;            
+        }
+        this.release = function(){
+            this.active = false;
+            this.label.alpha = 0;
         }
     }    
 })

@@ -11,10 +11,12 @@ define(function( require ){
         game.load.spritesheet('a4', 'assets/a4.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
         game.load.spritesheet('exp', 'assets/explosion.png', 24, 24, 6 );
         game.load.spritesheet('shine', 'assets/shine.png', config.planes.spriteSize, config.planes.spriteSize, 11);
+        game.load.image('slingshot-handle', 'assets/slingshot-handle.png');
         game.load.image('bonus-plane', 'assets/bonus-plane.png');
         game.load.image('bonus-turn', 'assets/bonus-turn.png');
         game.load.image('bonus-force', 'assets/bonus-force.png');
         game.load.image('bonus-shild', 'assets/bonus-shild.png');
+        game.load.image('turn-label', 'assets/turn-label.png');
         game.load.image('tree', 'assets/fields-tree-1.png');
         game.load.image('back', 'assets/fields-background.png');
     }
@@ -49,14 +51,14 @@ define(function( require ){
     function onMouseDown( pointer ){
         if( gs.isWaiting() && gs.isCurrentHit( pointer.x, pointer.y ) ){        
             gs.slingshot.setStart( gs.getCenter( gs.current ).x, gs.getCenter( gs.current ).y, game.input.activePointer.x, game.input.activePointer.y );
-            gs.slingshot.active = true;
+            gs.slingshot.activate();
         }
     }
 
     function onMouseUp( pointer ){
         if( gs.slingshot.active ){
             var slingshotStrength = gs.slingshot.getPulling( gs.slingshot.line.end.x, gs.slingshot.line.end.y );
-            gs.slingshot.active = false;
+            gs.slingshot.release();
             gs.fire( slingshotStrength.angle, slingshotStrength.length );
             gs.processing();
         }
@@ -79,16 +81,6 @@ define(function( require ){
     }
 
     function render(){
-
-        if( gs.isWaiting() ){
-            if( gs.slingshot.active ){
-                game.debug.geom( gs.slingshot.line, config.slingshot.labelColor, true );
-                game.debug.geom( gs.slingshot.label, config.slingshot.labelColor, true );
-            } 
-            gs.currentLabel.x = gs.current.x;
-            gs.currentLabel.y = gs.current.y;
-        }
-        
-        game.debug.geom( gs.currentLabel, config.slingshot.labelColor, false );        
+        game.debug.geom( gs.slingshot.line, config.slingshot.labelColor, true );     
     }
 });
