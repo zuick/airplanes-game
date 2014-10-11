@@ -38,12 +38,7 @@ define( function( require ){
             this.original.body.velocity.y = y;
             
             this.shadow.body.velocity.x = x;
-            this.shadow.body.velocity.y = y;
-            
-            if( this.shild ){
-                this.shild.body.velocity.x = x;
-                this.shild.body.velocity.y = y;
-            }
+            this.shadow.body.velocity.y = y;            
         }
         
         this.setPosition = function( x, y ){

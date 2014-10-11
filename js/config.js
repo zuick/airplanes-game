@@ -14,6 +14,7 @@ define( function(){
             ,maxCountInTurn: 3
             ,hitDistance: 12
             ,applyTime: 200
+            ,bounds: 50
             ,settings: [
                 {
                     sprite: "bonus-plane"
