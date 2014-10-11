@@ -19,6 +19,7 @@ define( function( require ){
             ,currentIndex: 0
             ,currentLabel: getTurnLabel( game, 0, 0 )
             ,slingshot: new Slingshot( game )
+            ,wind: { vx: 100, vy: 100 }
             ,createPlanes: function( count ){
                 var settings = config.planes.settings;
                 if( count > settings.length ) count = settings.length;           
@@ -82,15 +83,18 @@ define( function( require ){
                 }
             }
             ,createClouds: function(){
-                for( var i = 0; i < config.clouds.maxCount; i++ ){
-                    var spriteKey = config.clouds.sprites[ Math.floor( Math.random() * config.clouds.sprites.length ) ]
-                    var x = Math.random() * game.world.width;
-                    var y = Math.random() * game.world.height;
-                    
-                    var cloud = new Cloud( game, x, y, spriteKey );
-                    this.clouds.push( cloud );  
-                    this.shadowsGroup.add( cloud.shadow )
+                for( var i = 0; i < config.clouds.maxCount; i++ ){                    
+                    this.clouds.push( this.createRandomCloud() );
                 }
+            }
+            ,createRandomCloud: function(){
+                var spriteKey = config.clouds.sprites[ Math.floor( Math.random() * config.clouds.sprites.length ) ]
+                var x = Math.random() * game.world.width * ( - this.wind.x / this.wind.x );
+                var y = Math.random() * game.world.height * ( - this.wind.y / this.wind.y );
+                var cloud = new Cloud( game, x, y, this.wind.vx, this.wind.vy, spriteKey );
+                this.shadowsGroup.add( cloud.shadow );
+                console.log( cloud.original.x, cloud.original.y )
+                return cloud;
             }
             ,setCurrent: function( index ){
                 if( this.planes[index] ){
@@ -113,7 +117,10 @@ define( function( require ){
                 this.currentLabel.fadeOut()
                 this.slingshot.line.setTo( -1, -1, -1, -1 );
                 this.state = "processing";
-                               
+                
+                for( var i in this.clouds ){
+                    this.clouds[i].setVelocity( this.wind.vx, this.wind.vy );
+                }
             }
             ,waiting: function(){
                                                         
@@ -121,6 +128,11 @@ define( function( require ){
                 if( this.turns % config.world.bonusFrequence == 0 ){
                     this.createBonuses()
                 }
+                
+                for( var i in this.clouds ){
+                    this.clouds[i].setVelocity( 0, 0 );
+                }
+                
                 this.state = "waiting";
             }
             ,isProcessing: function(){ return this.state === "processing"; }
@@ -158,13 +170,20 @@ define( function( require ){
                 var newVelocity = this.getVelocity( angle, force );
                 sprite.setVelocity( newVelocity.x, newVelocity.y );            
             }
-            ,outBounds: function( sprite ){       
+            ,outBounds: function( sprite, withSize ){ 
                 var center = this.getCenter( sprite );
-
-                if( center.x <= 0 ||
-                    center.x >= game.world.width || 
-                    center.y <= 0 ||
-                    center.y >= game.world.height ) return true;
+                
+                var w = 0;
+                var h = 0;
+                
+                if( withSize ){
+                    w = sprite.body.width;
+                    h = sprite.body.height; 
+                }
+                if( center.x + w / 2 <= 0 ||
+                    center.x - w / 2 >= game.world.width || 
+                    center.y + h / 2 <= 0 ||
+                    center.y - h / 2 >= game.world.height ) return true;
                 return false;
             }
             ,decreaseForce: function( sprite ){
@@ -230,7 +249,14 @@ define( function( require ){
                             if( !plane.dieAnimation && !plane.hasShild() ) this.setDamage( plane );                        
                         }
                     }.bind(this))
-
+                    
+//                    this.clouds.map( function( cloud, index ){
+//                        if( this.outBounds( cloud.original, true ) ){
+//                            this.clouds.splice( index, 1 );
+//                            cloud.destroy();
+//                        }
+//                    }.bind(this))
+                    
                     this.bonuses.map( function( bonus, index ){
                         if( this.getDistance( bonus, this.current ) < config.bonuses.hitDistance ){
                             this.current.applyBonus( bonus );

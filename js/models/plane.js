@@ -67,8 +67,8 @@ define( function( require ){
             if( this.dieAnimation ) {
                 if( this.original.scale.x > this.shadow.scale.x ){
                     var scaleSteps = ( 1 - config.shadows.scale ) / config.planes.dieAnimationScaleStep;
-                    var dx = config.shadows.dx / scaleSteps;
-                    var dy = config.shadows.dy / scaleSteps;
+                    var dx = this.shadow.offset.x / scaleSteps;
+                    var dy = this.shadow.offset.y / scaleSteps;
                     this.original.body.x +=dx;
                     this.original.body.y +=dy;
                     this.scale.setTo( this.scale.x - config.planes.dieAnimationScaleStep )

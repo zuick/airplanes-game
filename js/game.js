@@ -63,7 +63,6 @@ define(function( require ){
         if( gs.slingshot.active ){
             var slingshotStrength = gs.slingshot.getPulling();
             gs.slingshot.release();
-            console.log( gs.slingshot )
             gs.fire( slingshotStrength.angle, slingshotStrength.length );
             gs.processing();
         }
