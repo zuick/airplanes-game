@@ -72,6 +72,7 @@ define( function( require ){
         this.release = function(){
             this.active = false;
             this.label.alpha = 0;
+            
         }
     }    
 })

@@ -57,8 +57,9 @@ define(function( require ){
 
     function onMouseUp( pointer ){
         if( gs.slingshot.active ){
-            var slingshotStrength = gs.slingshot.getPulling( gs.slingshot.line.end.x, gs.slingshot.line.end.y );
+            var slingshotStrength = gs.slingshot.getPulling();
             gs.slingshot.release();
+            console.log( gs.slingshot )
             gs.fire( slingshotStrength.angle, slingshotStrength.length );
             gs.processing();
         }
