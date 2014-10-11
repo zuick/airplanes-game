@@ -7,7 +7,7 @@ define( function( require ){
         this.start = { x: 0, y: 0 };
         this.finish = { x: 0, y: 0 }; 
         this.active = false;
-        this.line = false;
+        this.line = new Phaser.Line( -1, -1, -1, -1);;
         this.maxLength = config.slingshot.maxLength;
         this.label = game.add.sprite( 0, 0, "slingshot-handle" );
         this.label.anchor.setTo( 0.5, 0.5 );
@@ -15,13 +15,11 @@ define( function( require ){
         this.power = config.slingshot.power;
         this.setStart = function( x, y, x2, y2 ){
             this.start.x = x;
-            this.start.y = y;
-            this.line = new Phaser.Line(x, y, x2, y2);                
+            this.start.y = y;               
         }
         this.setFinish = function( x, y ){
             this.finish.x = x;
-            this.finish.y = y;
-            this.line.end.set( x, y );
+            this.finish.y = y;            
         }
         this.getPulling = function( x, y ){
             var sx = this.start.x;
@@ -41,21 +39,27 @@ define( function( require ){
             if( this.active ){
                 var slingshotStrength = this.getPulling( pointerX, pointerY );
 
-                var slingshotEndX, slingshotEndY = 0;
+                var slingEndX, slingEndY = 0;
                 var maxLength = this.maxLength + plane.getSlingshotMagnifier()                           
+                var planeDiameter = config.planes.spriteSize / 2 + 1;
                 
                 if ( slingshotStrength.length > maxLength ){            
-                    slingshotEndX = this.start.x + maxLength * Math.cos( utils.toRad( slingshotStrength.angle ) + Math.PI );
-                    slingshotEndY = this.start.y + maxLength * Math.sin( utils.toRad( slingshotStrength.angle ) + Math.PI );            
+                    slingEndX = this.start.x + maxLength * Math.cos( utils.toRad( slingshotStrength.angle ) + Math.PI );
+                    slingEndY = this.start.y + maxLength * Math.sin( utils.toRad( slingshotStrength.angle ) + Math.PI );            
                 }else{
-                    slingshotEndX = pointerX;
-                    slingshotEndY = pointerY;            
+                    slingEndX = pointerX;
+                    slingEndY = pointerY;            
                 }
-
-                this.line.end.set( slingshotEndX, slingshotEndY );
-                this.label.x = slingshotEndX;
-                this.label.y = slingshotEndY;
-                this.setFinish( slingshotEndX, slingshotEndY );
+                    
+                if( slingshotStrength.length > planeDiameter ){
+                    var slingStartX = this.start.x + planeDiameter * Math.cos( utils.toRad( slingshotStrength.angle ) + Math.PI );
+                    var slingStartY = this.start.y + planeDiameter * Math.sin( utils.toRad( slingshotStrength.angle ) + Math.PI );  
+                    this.line.start.set( slingStartX, slingStartY );
+                    this.line.end.set( slingEndX, slingEndY );                    
+                }
+                this.label.x = slingEndX;
+                this.label.y = slingEndY;
+                this.setFinish( slingEndX, slingEndY );
                 
                 plane.rotate( slingshotStrength.angle );
                 
