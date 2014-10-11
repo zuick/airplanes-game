@@ -45,7 +45,7 @@ define( function( require ){
             }
             
             if( this.name == "shild" ){
-                this.owner.shild = getShild( game, this.owner.x, this.owner.y );
+                this.owner.shild = getShild( game, this.owner.x, this.owner.y, this.owner.angle );
             }
         }
         

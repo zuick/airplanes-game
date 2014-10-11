@@ -15,26 +15,26 @@ define( function(){
             ,hitDistance: 12
             ,applyTime: 200
             ,settings: [
-//                {
-//                    sprite: "bonus-plane"
-//                    ,name: "plane"
-//                    ,start: "onTake"
-//                    ,end: "onTake"
-//                }
-//                ,{
-//                    sprite: "bonus-turn"
-//                    ,name: "turn"
-//                    ,start: "onTake"
-//                    ,end: "onTake"
-//                }
-//                ,{
-//                    sprite: "bonus-force"
-//                    ,name: "force"
-//                    ,start: "onStartTurn"
-//                    ,end: "onFire"
-//                    ,value: 50
-//                }
                 {
+                    sprite: "bonus-plane"
+                    ,name: "plane"
+                    ,start: "onTake"
+                    ,end: "onTake"
+                }
+                ,{
+                    sprite: "bonus-turn"
+                    ,name: "turn"
+                    ,start: "onTake"
+                    ,end: "onTake"
+                }
+                ,{
+                    sprite: "bonus-force"
+                    ,name: "force"
+                    ,start: "onStartTurn"
+                    ,end: "onFire"
+                    ,value: 50
+                }
+                ,{
                     sprite: "bonus-shild"
                     ,name: "shild"
                     ,start: "onLeaveTurn"
