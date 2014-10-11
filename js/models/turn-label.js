@@ -12,10 +12,13 @@ define( function(){
             game.add.tween( this.scale ).to( { x: 2, y: 2 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false );
         }
         
-        turnLabel.fadeIn = function(){
+        turnLabel.fadeIn = function( x, y ){
             game.add.tween( this ).to( { alpha: 1 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false );            
             game.add.tween( this.scale ).to( { x: 1, y: 1 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false );
             game.add.tween( this ).to( { angle: 360 } , 8000, Phaser.Easing.Linear.None, true, 0, Number.MAX_VALUE, false );
+            
+            this.x = x;
+            this.y = y;
         }
         
         return turnLabel;

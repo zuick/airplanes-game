@@ -11,7 +11,7 @@ define( function( require ){
         this.original.body.angularVelocity = 30;
         this.original.anchor.setTo(0.5, 0.5);
         
-        this.shadow = getShadow( game, x, y, settings.sprite );
+        this.shadow = getShadow( game, x, y, config.bonuses.height, settings.sprite );
                         
         this.name = settings.name;
         this.value = settings.value;

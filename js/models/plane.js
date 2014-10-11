@@ -8,7 +8,7 @@ define( function( require ){
         this.original.alive = true;
         game.physics.enable( this.original, Phaser.Physics.ARCADE);
         
-        this.shadow = getShadow( game, x, y, spriteKey );              
+        this.shadow = getShadow( game, x, y, config.planes.height, spriteKey );              
         this.color = color;
         this.health = config.planes.lives;
         this.basePosition = { x: x, y: y, r: r };
@@ -46,8 +46,7 @@ define( function( require ){
             this.original.body.x = x;
             this.original.body.y = y;
             
-            this.shadow.body.x = x + config.shadows.dx;
-            this.shadow.body.y = y + config.shadows.dy;
+            this.shadow.setPosition( x, y )
         }
         
         this.reanimate = function(){

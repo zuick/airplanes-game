@@ -19,6 +19,9 @@ define(function( require ){
         game.load.image('turn-label', 'assets/turn-label.png');
         game.load.image('tree', 'assets/fields-tree-1.png');
         game.load.image('back', 'assets/fields-background.png');
+        game.load.image('cloud-s', 'assets/cloud-small.png');
+        game.load.image('cloud-m', 'assets/cloud-middle.png');
+        game.load.image('cloud-l', 'assets/cloud-large.png');
     }
 
     function create() {
@@ -27,6 +30,7 @@ define(function( require ){
         
         gs = require("gs")(game);
         gs.createBackgroundItems();
+        gs.createClouds();
         
         var playes = ( window.location.search ) ? window.location.search.match(/p=([0-9])/)[1] : 2;
         gs.createPlanes( playes );

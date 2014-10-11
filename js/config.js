@@ -16,6 +16,7 @@ define( function(){
             ,hitDistance: 12
             ,applyTime: 200
             ,bounds: 50
+            ,height: 50
             ,settings: [
                 {
                     sprite: "bonus-plane"
@@ -46,8 +47,8 @@ define( function(){
         }
         ,backItems: { maxCount: 0 }
         ,shadows: {
-            dx: -50
-            ,dy: 50
+            dx: -1
+            ,dy: 1
             ,tint: 0
             ,alpha: 0.3
             ,scale: 0.4
@@ -59,6 +60,7 @@ define( function(){
             ,dieAnimationScaleStep: 0.025
             ,dieAnimationAngleStep: 10
             ,spriteSize: 48
+            ,height: 50
             ,settings: [
                 {
                     sprite: 'a1'
@@ -86,6 +88,11 @@ define( function(){
                 }
 
             ]
+        }
+        ,clouds: {
+            maxCount: 10
+            ,height: 60
+            ,sprites: [ "cloud-s", "cloud-m", "cloud-l" ]
         }
     }
 })

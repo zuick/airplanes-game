@@ -4,6 +4,7 @@ define( function( require ){
     var Slingshot = require('models/slingshot');
     var Plane = require('models/plane');
     var Bonus = require('models/bonus');
+    var Cloud = require('models/cloud');
     var getTurnLabel = require('models/turn-label');
     
     return function( game ){        
@@ -13,6 +14,7 @@ define( function( require ){
             ,objectsGroup: game.add.group()
             ,bonuses: []
             ,backItems: []
+            ,clouds: []
             ,turns: 0
             ,currentIndex: 0
             ,currentLabel: getTurnLabel( game, 0, 0 )
@@ -79,6 +81,17 @@ define( function( require ){
                     this.backItems.push( game.add.sprite( x, y, 'tree' ) );                
                 }
             }
+            ,createClouds: function(){
+                for( var i = 0; i < config.clouds.maxCount; i++ ){
+                    var spriteKey = config.clouds.sprites[ Math.floor( Math.random() * config.clouds.sprites.length ) ]
+                    var x = Math.random() * game.world.width;
+                    var y = Math.random() * game.world.height;
+                    
+                    var cloud = new Cloud( game, x, y, spriteKey );
+                    this.clouds.push( cloud );  
+                    this.shadowsGroup.add( cloud.shadow )
+                }
+            }
             ,setCurrent: function( index ){
                 if( this.planes[index] ){
                     if( this.current ) this.current.leaveTurn();
@@ -86,10 +99,7 @@ define( function( require ){
                     this.current = this.planes[index];
                     this.currentIndex = index;
                     this.current.bringToTop();
-                    
-                    this.currentLabel.x = this.current.x;
-                    this.currentLabel.y = this.current.y;
-                    this.currentLabel.fadeIn()
+                    this.currentLabel.fadeIn( this.current.x, this.current.y )
                 }        
             }
             ,setDamage: function( plane ){
@@ -103,8 +113,10 @@ define( function( require ){
                 this.currentLabel.fadeOut()
                 this.slingshot.line.setTo( -1, -1, -1, -1 );
                 this.state = "processing";
+                               
             }
             ,waiting: function(){
+                                                        
                 this.turns++;
                 if( this.turns % config.world.bonusFrequence == 0 ){
                     this.createBonuses()
@@ -116,6 +128,7 @@ define( function( require ){
             ,nextTurn: function(){
                 if( this.current.additionalTurn ) {
                     this.current.additionalTurn = false;
+                    this.currentLabel.fadeIn( this.current.x, this.current.y )
                     return;
                 }
                 
