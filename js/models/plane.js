@@ -80,6 +80,7 @@ define( function( require ){
                     explosion.animations.add("bang");
                     explosion.animations.play("bang", 16, false, true);                    
                     
+                    
                     if( this.health == 0 ){
                         this.exists = false;
                         this.alive = false;
@@ -89,9 +90,9 @@ define( function( require ){
                     
                     if( typeof this.onAnimationEnd === "function" ){
                         this.onAnimationEnd();
-                        this.onAnimationEnd = false;
-                        
+                        this.onAnimationEnd = false; 
                     }
+                    
                 }
             }
         }

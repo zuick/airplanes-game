@@ -19,7 +19,7 @@ define( function( require ){
             ,currentIndex: 0
             ,currentLabel: getTurnLabel( game, 0, 0 )
             ,slingshot: new Slingshot( game )
-            ,wind: { vx: 100, vy: 100 }
+            ,wind: { vx: 5, vy: 20 }
             ,createPlanes: function( count ){
                 var settings = config.planes.settings;
                 if( count > settings.length ) count = settings.length;           
@@ -75,26 +75,27 @@ define( function( require ){
                     }
                 }
             }
+            ,createClouds: function(){
+                if( this.clouds.length < config.clouds.maxCount ){
+                    for( var i = 0; i < config.clouds.maxCountInTurn && this.clouds.length < config.clouds.maxCount; i++ ){
+                        this.clouds.push( this.createRandomCloud() );                        
+                    }
+                }             
+            }
+            ,createRandomCloud: function(){
+                var spriteKey = config.clouds.sprites[ Math.floor( Math.random() * config.clouds.sprites.length ) ]
+                var x = Math.random() * game.world.width * ( - this.wind.vx / this.wind.vx );
+                var y = Math.random() * game.world.height * ( - this.wind.vy / this.wind.vy );
+                var cloud = new Cloud( game, x, y, this.wind.vx, this.wind.vy, spriteKey );
+                this.shadowsGroup.add( cloud.shadow );
+                return cloud;
+            }
             ,createBackgroundItems: function(){
                 for( var i = 0; i < config.backItems.maxCount; i++ ){
                     var x = Math.random() * game.world.width;
                     var y = Math.random() * game.world.height;
                     this.backItems.push( game.add.sprite( x, y, 'tree' ) );                
                 }
-            }
-            ,createClouds: function(){
-                for( var i = 0; i < config.clouds.maxCount; i++ ){                    
-                    this.clouds.push( this.createRandomCloud() );
-                }
-            }
-            ,createRandomCloud: function(){
-                var spriteKey = config.clouds.sprites[ Math.floor( Math.random() * config.clouds.sprites.length ) ]
-                var x = Math.random() * game.world.width * ( - this.wind.x / this.wind.x );
-                var y = Math.random() * game.world.height * ( - this.wind.y / this.wind.y );
-                var cloud = new Cloud( game, x, y, this.wind.vx, this.wind.vy, spriteKey );
-                this.shadowsGroup.add( cloud.shadow );
-                console.log( cloud.original.x, cloud.original.y )
-                return cloud;
             }
             ,setCurrent: function( index ){
                 if( this.planes[index] ){
@@ -127,11 +128,12 @@ define( function( require ){
                 this.turns++;
                 if( this.turns % config.world.bonusFrequence == 0 ){
                     this.createBonuses()
+                    this.createClouds()
                 }
                 
-                for( var i in this.clouds ){
-                    this.clouds[i].setVelocity( 0, 0 );
-                }
+//                for( var i in this.clouds ){
+//                    this.clouds[i].setVelocity( 0, 0 );
+//                }
                 
                 this.state = "waiting";
             }
@@ -239,6 +241,16 @@ define( function( require ){
                 }.bind(this))
             }
             ,processCollisions: function(){
+                    this.clouds.map( function( cloud, index ){
+                        if( this.outBounds( cloud.original, true ) ){
+                            if( cloud.wasVisible ){
+                                this.clouds.splice( index, 1 );
+                                cloud.destroy();
+                            }
+                        }else{
+                            if( !cloud.wasVisible ) cloud.wasVisible = true;
+                        }
+                    }.bind(this))
                 if( this.isProcessing() ){
                     var enemies = this.planes.filter( function( plane, index ){
                         return index !== this.currentIndex;
@@ -250,12 +262,6 @@ define( function( require ){
                         }
                     }.bind(this))
                     
-//                    this.clouds.map( function( cloud, index ){
-//                        if( this.outBounds( cloud.original, true ) ){
-//                            this.clouds.splice( index, 1 );
-//                            cloud.destroy();
-//                        }
-//                    }.bind(this))
                     
                     this.bonuses.map( function( bonus, index ){
                         if( this.getDistance( bonus, this.current ) < config.bonuses.hitDistance ){

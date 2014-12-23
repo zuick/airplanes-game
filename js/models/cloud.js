@@ -5,6 +5,8 @@ define( function( require ){
     return function( game, x, y, vx, vy, spriteKey ){
         this.original = game.add.sprite( x, y, spriteKey );
         this.original.anchor.setTo( 0.5, 0.5 );
+        this.wasVisible = false; 
+        
         game.physics.enable( this.original, Phaser.Physics.ARCADE);
         
         this.shadow = getShadow( game, x, y, config.clouds.height, spriteKey );
@@ -32,6 +34,7 @@ define( function( require ){
         this.destroy = function(){
             this.original.destroy();
             this.shadow.destroy();
+            console.log("destroy cloud")
         }
         this.setVelocity( vx, vy );
     }

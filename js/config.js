@@ -45,7 +45,13 @@ define( function(){
                 }
             ]
         }
-        ,backItems: { maxCount: 0 }
+        ,clouds: {
+            maxCount: 30
+            ,maxCountInTurn: 10
+            ,height: 60
+            ,sprites: [ "cloud-s", "cloud-m", "cloud-l" ]
+        }
+        ,backItems: { maxCount: 5 }
         ,shadows: {
             dx: -1
             ,dy: 1
@@ -72,7 +78,7 @@ define( function(){
                     sprite: 'a2'
                     ,color: '#a6ad42'
                     ,pos: 'right'
-                    ,offset: 20
+                    ,offset: 130
                 }
                 ,{
                     sprite: 'a3'
@@ -88,11 +94,6 @@ define( function(){
                 }
 
             ]
-        }
-        ,clouds: {
-            maxCount: 10
-            ,height: 60
-            ,sprites: [ "cloud-s", "cloud-m", "cloud-l" ]
         }
     }
 })
