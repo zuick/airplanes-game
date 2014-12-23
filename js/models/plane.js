@@ -19,6 +19,8 @@ define( function( require ){
         this.dieAnimation = false;
         this.original.anchor.setTo(0.5, 0.5);
         this.pos = pos;
+        this.spriteKey = spriteKey;
+        
         this.rotate = function( a ){
             if( a >= 0 && a < 45 || a > 315 && a <= 360 ){
                 this.original.frame = 0;

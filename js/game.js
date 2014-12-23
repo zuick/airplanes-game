@@ -80,8 +80,10 @@ define(function( require ){
         gs.processForces( game );
         
         gs.processCollisions();
-        
+                
         gs.planeAnimations();
+        
+        gs.gameInfo.update();
         
         stats.map( function( stat, index ){
             stat.setText( gs.getPlaneStateString( index ) );
