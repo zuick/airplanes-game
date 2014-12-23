@@ -5,6 +5,7 @@ define( function( require ){
     var Plane = require('models/plane');
     var Bonus = require('models/bonus');
     var Cloud = require('models/cloud');
+    var GameInfo = require('models/game-info');
     var getTurnLabel = require('models/turn-label');
     
     return function( game ){        
@@ -12,6 +13,7 @@ define( function( require ){
             planes: []   
             ,shadowsGroup: game.add.group()
             ,objectsGroup: game.add.group()
+            ,gameInfo: new GameInfo( game )
             ,bonuses: []
             ,backItems: []
             ,clouds: []
@@ -49,7 +51,7 @@ define( function( require ){
                             break;
                         default: break;
                     }
-                    var plane = new Plane( game, x, y, r, settings[i].sprite, settings[i].color );
+                    var plane = new Plane( game, x, y, r, settings[i].sprite, settings[i].color, settings[i].pos );
                     
                     this.objectsGroup.add( plane.original )
                     this.shadowsGroup.add( plane.shadow )
@@ -76,6 +78,7 @@ define( function( require ){
                 }
             }
             ,createClouds: function(){
+                return;
                 if( this.clouds.length < config.clouds.maxCount ){
                     for( var i = 0; i < config.clouds.maxCountInTurn && this.clouds.length < config.clouds.maxCount; i++ ){
                         this.clouds.push( this.createRandomCloud() );                        
@@ -96,6 +99,9 @@ define( function( require ){
                     var y = Math.random() * game.world.height;
                     this.backItems.push( game.add.sprite( x, y, 'tree' ) );                
                 }
+            }
+            ,createGameInfo: function(){
+                this.gameInfo.init( this.planes );
             }
             ,setCurrent: function( index ){
                 if( this.planes[index] ){
@@ -174,6 +180,7 @@ define( function( require ){
             }
             ,outBounds: function( sprite, withSize ){ 
                 var center = this.getCenter( sprite );
+                var borderWidth = config.gameInfo.borderWidth;
                 
                 var w = 0;
                 var h = 0;
@@ -182,10 +189,10 @@ define( function( require ){
                     w = sprite.body.width;
                     h = sprite.body.height; 
                 }
-                if( center.x + w / 2 <= 0 ||
-                    center.x - w / 2 >= game.world.width || 
-                    center.y + h / 2 <= 0 ||
-                    center.y - h / 2 >= game.world.height ) return true;
+                if( center.x + w / 2 <= borderWidth ||
+                    center.x - w / 2 >= game.world.width - borderWidth || 
+                    center.y + h / 2 <= borderWidth ||
+                    center.y - h / 2 >= game.world.height - borderWidth ) return true;
                 return false;
             }
             ,decreaseForce: function( sprite ){

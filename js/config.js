@@ -5,6 +5,12 @@ define( function(){
             ,bonusFrequence: 1
             ,wreckAlpha: 0.5
         }
+        ,gameInfo: {
+            borderSprite: "game-info-border"
+            ,borderWidth: 40            
+            ,baseSprite: "game-info-base"
+            ,baseWidth: 100
+        }
         ,slingshot:{
             power: 5
             ,labelColor: "#e5ffea"
@@ -51,7 +57,7 @@ define( function(){
             ,height: 60
             ,sprites: [ "cloud-s", "cloud-m", "cloud-l" ]
         }
-        ,backItems: { maxCount: 5 }
+        ,backItems: { maxCount: 0 }
         ,shadows: {
             dx: -1
             ,dy: 1

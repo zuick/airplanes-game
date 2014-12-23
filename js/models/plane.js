@@ -3,7 +3,7 @@ define( function( require ){
     var getShadow = require('models/shadow');
     var getShild = require('models/shild');
     
-    return function Plane( game, x, y, r, spriteKey, color ){
+    return function Plane( game, x, y, r, spriteKey, color, pos ){
         this.original = game.add.sprite( x, y, spriteKey );        
         this.original.alive = true;
         game.physics.enable( this.original, Phaser.Physics.ARCADE);
@@ -18,7 +18,7 @@ define( function( require ){
         this.onAnimationEnd = false;
         this.dieAnimation = false;
         this.original.anchor.setTo(0.5, 0.5);
-
+        this.pos = pos;
         this.rotate = function( a ){
             if( a >= 0 && a < 45 || a > 315 && a <= 360 ){
                 this.original.frame = 0;

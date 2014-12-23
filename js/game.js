@@ -11,6 +11,8 @@ define(function( require ){
         game.load.spritesheet('a4', 'assets/a4.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
         game.load.spritesheet('exp', 'assets/explosion.png', 24, 24, 6 );
         game.load.spritesheet('shine', 'assets/shine.png', config.planes.spriteSize, config.planes.spriteSize, 11);
+        game.load.image('game-info-border', 'assets/game-info-border.png');
+        game.load.image('game-info-base', 'assets/game-info-base.png');
         game.load.image('slingshot-handle', 'assets/slingshot-handle.png');
         game.load.image('bonus-plane', 'assets/bonus-plane.png');
         game.load.image('bonus-turn', 'assets/bonus-turn.png');
@@ -49,6 +51,8 @@ define(function( require ){
             text.setShadow(-1, 1, 'rgba(0,0,0,0.5)', 1);
             return text;
         })
+        
+        gs.createGameInfo();
 
     }
 
