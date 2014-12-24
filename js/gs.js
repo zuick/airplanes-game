@@ -158,7 +158,7 @@ define( function( require ){
                     this.setCurrent( this.currentIndex + 1 );
                 }
 
-                if( !this.current.alive ) this.nextTurn();
+                if( this.current.health <= 0 ) this.nextTurn();
             }
             ,fire: function( angle, force ){
                 force *= this.slingshot.power;            

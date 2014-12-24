@@ -5,7 +5,6 @@ define( function( require ){
     
     return function Plane( game, x, y, r, spriteKey, color, pos ){
         this.original = game.add.sprite( x, y, spriteKey );        
-        this.original.alive = true;
         game.physics.enable( this.original, Phaser.Physics.ARCADE);
         
         this.shadow = getShadow( game, x, y, config.planes.height, spriteKey );              
@@ -65,6 +64,10 @@ define( function( require ){
             this.bonuses = [];
         }
         
+        this.noPlanesMore = function(){
+            this.dieAnimation = false;
+        }
+        
         this.playAnimations = function(){
             if( this.dieAnimation ) {
                 if( this.original.scale.x > this.shadow.scale.x ){
@@ -83,11 +86,12 @@ define( function( require ){
                     explosion.animations.play("bang", 16, false, true);                    
                     
                     
-                    if( this.health == 0 ){
-                        this.exists = false;
-                        this.alive = false;
-                    }else{
+                    if( this.health > 0 ){                        
                         this.reanimate();
+                    }else{
+                        this.noPlanesMore();
+                        this.original.alpha = 0;
+                        this.shadow.alpha = 0;
                     }
                     
                     if( typeof this.onAnimationEnd === "function" ){
@@ -180,8 +184,6 @@ define( function( require ){
         this.__defineGetter__("body", this.getFromOriginal('body') )
         this.__defineGetter__("scale", this.getFromOriginal('scale') )
         this.__defineGetter__("angle", this.getFromOriginal('angle') )
-        this.__defineGetter__("alive", this.getFromOriginal('alive') )
-        this.__defineGetter__("exists", this.getFromOriginal('exists') )
         this.__defineGetter__("x", this.getFromOriginal('x') )
         this.__defineGetter__("y", this.getFromOriginal('y') )                
         

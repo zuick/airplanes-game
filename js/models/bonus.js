@@ -69,8 +69,6 @@ define( function( require ){
         this.__defineGetter__("body", this.getFromOriginal('body') )
         this.__defineGetter__("scale", this.getFromOriginal('scale') )
         this.__defineGetter__("angle", this.getFromOriginal('angle') )
-        this.__defineGetter__("alive", this.getFromOriginal('alive') )
-        this.__defineGetter__("exists", this.getFromOriginal('exists') )
         this.__defineGetter__("x", this.getFromOriginal('x') )
         this.__defineGetter__("y", this.getFromOriginal('y') )
     }
