@@ -9,7 +9,8 @@ define( function(){
             borderSprite: "game-info-border"
             ,borderWidth: 40            
             ,baseSprite: "game-info-base"
-            ,baseWidth: 100
+            ,baseWidth: 200
+            ,stuffScale: 0.8
         }
         ,slingshot:{
             power: 5
@@ -67,7 +68,7 @@ define( function(){
         }
         ,planes:{
             hitDistance: 12
-            ,lives: 3
+            ,lives: 1
             ,defaultSprite: 'a1'
             ,dieAnimationScaleStep: 0.025
             ,dieAnimationAngleStep: 10

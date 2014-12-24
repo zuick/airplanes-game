@@ -14,6 +14,7 @@ define( function( require ){
                 ,shild: ( plane.findBonusByName("shild") ) ? true : false
                 ,sprite: plane.spriteKey
                 ,angle: plane.basePosition.r
+                ,color: plane.color
             }
         }
         

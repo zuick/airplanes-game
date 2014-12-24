@@ -10,6 +10,8 @@ define( function( require ){
         
         this.shadow = getShadow( game, x, y, config.planes.height, spriteKey );              
         this.color = color;
+        this.pos = pos;
+        this.spriteKey = spriteKey;
         this.health = config.planes.lives;
         this.basePosition = { x: x, y: y, r: r };
         
@@ -18,8 +20,6 @@ define( function( require ){
         this.onAnimationEnd = false;
         this.dieAnimation = false;
         this.original.anchor.setTo(0.5, 0.5);
-        this.pos = pos;
-        this.spriteKey = spriteKey;
         
         this.rotate = function( a ){
             if( a >= 0 && a < 45 || a > 315 && a <= 360 ){
