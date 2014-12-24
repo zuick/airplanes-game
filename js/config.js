@@ -68,7 +68,7 @@ define( function(){
         }
         ,planes:{
             hitDistance: 12
-            ,lives: 1
+            ,lives: 3
             ,defaultSprite: 'a1'
             ,dieAnimationScaleStep: 0.025
             ,dieAnimationAngleStep: 10

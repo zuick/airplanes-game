@@ -1,3 +1,3 @@
-requirejs(['game']);
+requirejs(['init']);
 
 
