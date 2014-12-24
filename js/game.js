@@ -1,8 +1,7 @@
 define(function( require ){    
     var game = new Phaser.Game( window.innerWidth, window.innerHeight, Phaser.AUTO, 'phaser-stage', { preload: preload, create: create, update: update, render: render });
     var gs = null;
-    var config = require('config'); 
-    var stats;
+    var config = require('config');
     
     function preload() {    
         game.load.spritesheet('a1', 'assets/a1.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
@@ -42,16 +41,6 @@ define(function( require ){
         game.input.onDown.add(onMouseDown, this);
         game.input.onUp.add(onMouseUp, this);
         
-        stats = gs.planes.map( function( plane, index ){ 
-            var text = game.add.text( 20 , 15 + index * 25, gs.getPlaneStateString( index ), {
-                font: "25px Arial",
-                fill: gs.planes[index].color,
-                align: "left"
-            } )
-            text.setShadow(-1, 1, 'rgba(0,0,0,0.5)', 1);
-            return text;
-        })
-        
         gs.createGameInfo();
 
     }
@@ -83,11 +72,7 @@ define(function( require ){
                 
         gs.planeAnimations();
         
-        gs.gameInfo.update();
-        
-        stats.map( function( stat, index ){
-            stat.setText( gs.getPlaneStateString( index ) );
-        })
+        gs.gameInfo.update();        
     }
 
     function render(){
