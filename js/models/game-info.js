@@ -11,6 +11,8 @@ define( function( require ){
             return { 
                 health: plane.health
                 ,shild: ( plane.findBonusByName("shild") ) ? true : false
+                ,turn: ( plane.findBonusByName("turn") ) ? true : false
+                ,force: ( plane.findBonusByName("force") ) ? true : false
                 ,sprite: plane.spriteKey
                 ,angle: plane.basePosition.r
                 ,color: plane.color

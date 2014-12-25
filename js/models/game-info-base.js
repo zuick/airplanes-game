@@ -16,6 +16,12 @@ define( function( require ){
             return false;
         }
         
+        this.getBonusSprite = function( name ){
+            var bonuses = config.bonuses.settings.filter( function( setting ){ return setting.name === name } );
+            if( bonuses.length ) return bonuses[0].sprite;
+            else return "";
+        }
+        
         this.draw = function(){
             this.stuff.removeAll();
             
@@ -26,20 +32,43 @@ define( function( require ){
             if( this.background.width > this.background.height ) dx = stuffWidth;
             else dy = stuffWidth;
             
+            var stuff = [];
+            for( var i = 0; i < this.info.health - 1; i++ ){
+                stuff.push( { 
+                    sprite: config.planes.defaultSprite
+                    ,tint: Phaser.Color.hexToRGB( this.info.color )
+                    ,angle: this.info.angle
+                    ,scale: true
+                })
+            }
             
-            for( var i = 0; i < this.info.health; i++ ){
-                var planeSprite = game.add.sprite( this.background.x + stuffWidth / 2 + i * dx, this.background.y + stuffWidth / 2 + i * dy, this.info.sprite );
+            if( this.info.shild ) stuff.push( { sprite: this.getBonusSprite("shild") } )
+            if( this.info.turn ) stuff.push( { sprite: this.getBonusSprite("turn") } )
+            if( this.info.force ) stuff.push( { sprite: this.getBonusSprite("force") } )
+            
+            for( var i = 0; i < stuff.length; i++ ){
+                var sprite = game.add.sprite( this.background.x + stuffWidth / 2 + i * dx, this.background.y + stuffWidth / 2 + i * dy, stuff[i].sprite );
                 
-                planeSprite.anchor.setTo(0.5, 0.5);
-                planeSprite.angle = this.info.angle;
-                planeSprite.scale.setTo( stuffWidth / planeSprite.width );
-                //planeSprite.tint = Phaser.Color.hexToRGB( this.info.color );
-                this.stuff.add( planeSprite );
+                sprite.anchor.setTo(0.5, 0.5);
+                
+                if( stuff[i].scale ) sprite.scale.setTo( stuffWidth / sprite.width );
+                if( stuff[i].angle ) sprite.angle = stuff[i].angle;
+                if( stuff[i].tint ) sprite.tint = stuff[i].tint;
+                
+                this.stuff.add( sprite );
             }
                         
+            if( this.stuff.height > this.background.height ){
+                this.background.height = this.stuff.height + stuffWidth;                
+            }
+            
+            if( this.stuff.width > this.background.width ){
+                this.background.width = this.stuff.width + stuffWidth;                
+            }
+            
+                   
             this.stuff.y = this.background.height / 2 - this.stuff.height / 2;
             this.stuff.x = this.background.width / 2 - this.stuff.width / 2;
-            
             
         }
         
