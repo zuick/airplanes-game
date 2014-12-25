@@ -83,8 +83,7 @@ define( function( require ){
                     var explosion = game.add.sprite( this.original.x, this.original.y, "exp", 0 );
                     explosion.anchor.setTo(0.5, 0.5);
                     explosion.animations.add("bang");
-                    explosion.animations.play("bang", 16, false, true);                    
-                    
+                    explosion.animations.play("bang", 16, false, true);                                        
                     
                     if( this.health > 0 ){                        
                         this.reanimate();

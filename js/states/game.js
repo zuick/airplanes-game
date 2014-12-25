@@ -4,7 +4,7 @@ define(function( require ){
         var config = require('config');
         
         this.create = function(){
-            game.stage.backgroundColor = '#ede4d1';
+            game.stage.backgroundColor = '#000';
             game.add.tileSprite( 0, 0, game.world.width, game.world.height, 'back' );
 
             gs = require("gs")(game);
@@ -24,14 +24,14 @@ define(function( require ){
         }
 
         this.onMouseDown = function( pointer ){
-            if( gs.isWaiting() && gs.isCurrentHit( pointer.x, pointer.y ) ){        
+            if( !gs.isEndGame() && gs.isWaiting() && gs.isCurrentHit( pointer.x, pointer.y ) ){        
                 gs.slingshot.setStart( gs.getCenter( gs.current ).x, gs.getCenter( gs.current ).y, game.input.activePointer.x, game.input.activePointer.y );
                 gs.slingshot.activate();
             }
         }
 
         this.onMouseUp = function( pointer ){
-            if( gs.slingshot.active ){
+            if( !gs.isEndGame() && gs.slingshot.active ){
                 var slingshotStrength = gs.slingshot.getPulling();
                 gs.slingshot.release();
                 gs.fire( slingshotStrength.angle, slingshotStrength.length );

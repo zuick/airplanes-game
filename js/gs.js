@@ -121,7 +121,9 @@ define( function( require ){
                 
             }
             ,processing: function(){ 
-                this.currentLabel.fadeOut()
+                if( this.state === "end" ) return;
+                
+                this.currentLabel.fadeOut();
                 this.slingshot.line.setTo( -1, -1, -1, -1 );
                 this.state = "processing";
                 
@@ -130,7 +132,8 @@ define( function( require ){
                 }
             }
             ,waiting: function(){
-                                                        
+                if( this.state === "end" ) return;
+                
                 this.turns++;
                 if( this.turns % config.world.bonusFrequence == 0 ){
                     this.createBonuses()
@@ -145,7 +148,21 @@ define( function( require ){
             }
             ,isProcessing: function(){ return this.state === "processing"; }
             ,isWaiting: function(){ return this.state === "waiting"; }
+            ,isEndGame: function(){ return this.state === "end"; }
+            ,endGame: function( winner ){
+                this.state = "end";
+                game.state.start("battle-options", true);
+            }
             ,nextTurn: function(){
+                var alivePlanes = this.planes.filter( function( plane ){ return plane.health > 0 } );
+                if( alivePlanes.length === 1 ){
+                    this.endGame( alivePlanes[0] );
+                    return;
+                }else if( alivePlanes.length === 0 ){
+                    this.endGame();
+                    return;
+                }
+                
                 if( this.current.additionalTurn ) {
                     this.current.additionalTurn = false;
                     this.currentLabel.fadeIn( this.current.x, this.current.y )
@@ -158,7 +175,9 @@ define( function( require ){
                     this.setCurrent( this.currentIndex + 1 );
                 }
 
-                if( this.current.health <= 0 ) this.nextTurn();
+                if( this.current.health <= 0 ) {
+                    this.nextTurn();
+                }
             }
             ,fire: function( angle, force ){
                 force *= this.slingshot.power;            
