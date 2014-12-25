@@ -47,7 +47,10 @@ define( function( require ){
             if( this.info.force ) stuff.push( { sprite: this.getBonusSprite("force") } )
             
             for( var i = 0; i < stuff.length; i++ ){
-                var sprite = game.add.sprite( this.background.x + stuffWidth / 2 + i * dx, this.background.y + stuffWidth / 2 + i * dy, stuff[i].sprite );
+                var x = this.background.x + stuffWidth / 2 + i * dx;
+                var y = this.background.y + stuffWidth / 2 + i * dy;
+                
+                var sprite = game.add.sprite( x, y, stuff[i].sprite );
                 
                 sprite.anchor.setTo(0.5, 0.5);
                 
