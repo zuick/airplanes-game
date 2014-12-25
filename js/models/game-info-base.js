@@ -46,6 +46,11 @@ define( function( require ){
         this.setInfo = function( info ){
             this.info = info;
         }
+        
+        this.destroy = function(){
+            this.stuff.removeAll();
+            this.background.destroy();
+        }
     }
     
 })

@@ -151,6 +151,7 @@ define( function( require ){
             ,isEndGame: function(){ return this.state === "end"; }
             ,endGame: function( winner ){
                 this.state = "end";
+                this.destroy();
                 game.state.start("battle-options", true);
             }
             ,nextTurn: function(){
@@ -296,6 +297,24 @@ define( function( require ){
                         }
                     }.bind(this))
                 }
+            }
+            ,destroyItems: function( array ){
+                while( array.length ){
+                    var item = array.pop();
+                    item.destroy();
+                }
+            }
+            ,destroy: function(){
+                
+                this.destroyItems( this.planes );                
+                this.destroyItems( this.bonuses );
+                this.destroyItems( this.clouds );
+                this.destroyItems( this.backItems );
+                
+                this.shadowsGroup.destroy();
+                this.objectsGroup.destroy();
+                this.slingshot.destroy();
+                this.gameInfo.destroy();
             }
         };
     }

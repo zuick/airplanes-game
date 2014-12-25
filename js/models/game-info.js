@@ -5,8 +5,7 @@ define( function( require ){
     return function( game ){
         this.borders = game.add.group();
         this.bases = {};
-        this.basesInfo = {};        
-        this.basesStuff = {};
+        this.basesInfo = {};
         
         this.getInfo = function( plane ){
             return { 
@@ -85,6 +84,15 @@ define( function( require ){
                 }
                 
                 this.bases[this.planes[i].pos].draw();
+            }
+        }
+        
+        this.destroy = function(){
+            this.planes = null;
+            this.borders.removeAll();
+            var keys = Object.keys( this.bases )
+            for( var i in keys ){
+                this.bases[ keys[i] ].destroy();
             }
         }
     }

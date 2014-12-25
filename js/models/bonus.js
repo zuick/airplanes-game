@@ -52,7 +52,7 @@ define( function( require ){
         this.destroy = function(){            
             if( this.name == "shild" ){
                 
-                if( this.owner.shild ){
+                if( this.owner && this.owner.shild ){
                     var scaleOut = game.add.tween( this.owner.shild.scale ).to( { x: 1.5, y: 1.5 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false );
                     var fadeOut = game.add.tween( this.owner.shild ).to( { alpha: 0 }, 200, Phaser.Easing.Quadratic.None, true, 0, 0, false );
                     scaleOut.onComplete.add( function(){

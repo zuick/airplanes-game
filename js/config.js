@@ -7,10 +7,10 @@ define( function(){
         }
         ,gameInfo: {
             borderSprite: "game-info-border"
-            ,borderWidth: 40            
+            ,borderWidth: 30           
             ,baseSprite: "game-info-base"
             ,baseWidth: 200
-            ,stuffScale: 0.8
+            ,stuffScale: 1
         }
         ,slingshot:{
             power: 5
@@ -68,7 +68,7 @@ define( function(){
         }
         ,planes:{
             hitDistance: 12
-            ,lives: 1
+            ,lives: 3
             ,defaultSprite: 'a1'
             ,dieAnimationScaleStep: 0.025
             ,dieAnimationAngleStep: 10

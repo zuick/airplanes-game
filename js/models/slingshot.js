@@ -74,6 +74,10 @@ define( function( require ){
             this.label.alpha = 0;
             
         }
+        
+        this.destroy = function(){
+            this.label.destroy();
+        }
     }    
 })
 

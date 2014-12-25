@@ -147,6 +147,14 @@ define( function( require ){
             }
         }
         
+        this.destroy = function(){
+            this.original.destroy();
+            this.shadow.destroy();
+            for( var i in this.bonuses ){
+                this.bonuses[i].destroy();
+            }
+        }
+        
         this.processBonuses = function( event ){
             for( var i in this.bonuses ){
                 if( this.bonuses[i].start == event && !this.bonuses[i].active ){
