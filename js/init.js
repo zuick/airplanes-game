@@ -4,7 +4,7 @@ define(function( require ){
     var GameState = require('states/game');
     var BattleOptionsScreen = require('states/battle-options');
     
-    var game = new Phaser.Game( window.innerWidth, window.innerHeight, Phaser.AUTO );
+    var game = new Phaser.Game( window.innerWidth, window.innerHeight, Phaser.CANVAS );
     
     game.state.add( 'game', GameState );
     game.state.add( 'battle-options', BattleOptionsScreen );
