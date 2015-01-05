@@ -22,6 +22,7 @@ define( function( require ){
             game.load.image('cloud-s', 'assets/cloud-small.png');
             game.load.image('cloud-m', 'assets/cloud-middle.png');
             game.load.image('cloud-l', 'assets/cloud-large.png');
+            game.load.image('rocket', 'assets/rocket.png');
         } 
         this.create = function(){
             game.state.start( 'game' );            

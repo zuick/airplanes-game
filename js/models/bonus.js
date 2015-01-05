@@ -40,6 +40,9 @@ define( function( require ){
             }else if( this.name == 'turn' ){
                 this.owner.additionalTurn = true;
                 this.owner.removeBonus( this );            
+            }else if( this.name == 'force' ){
+                this.owner.force += this.value;
+                this.owner.removeBonus( this );            
             }else{
                 this.active = true;
             }

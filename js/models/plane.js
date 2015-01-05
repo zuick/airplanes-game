@@ -54,6 +54,7 @@ define( function( require ){
             this.dieAnimation = false;
             this.original.scale.setTo( 1, 1 );
             this.original.alpha = 1;
+            this.force = config.planes.defaultVelocity;
             this.setPosition( this.basePosition.x - this.original.body.width / 2, this.basePosition.y - this.original.body.height / 2 );                            
             this.rotate( this.basePosition.r )
             
@@ -186,6 +187,11 @@ define( function( require ){
             var bonus = this.findBonusByName( "shild" )
             if( bonus && bonus.active ) return true;
             return false;
+        }
+        
+        this.changeAngle = function( angle ){
+            this.original.angle += angle;
+            this.shadow.angle += angle;
         }
         
         this.__defineGetter__("body", this.getFromOriginal('body') )

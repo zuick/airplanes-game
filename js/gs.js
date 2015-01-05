@@ -3,6 +3,7 @@ define( function( require ){
     var utils = require('utils');
     var Slingshot = require('models/slingshot');
     var Plane = require('models/plane');
+    var Rocket = require('models/rocket');
     var Bonus = require('models/bonus');
     var Cloud = require('models/cloud');
     var GameInfo = require('models/game-info');
@@ -11,6 +12,7 @@ define( function( require ){
     return function( game ){        
         return {
             planes: []   
+            ,rockets: []
             ,shadowsGroup: game.add.group()
             ,objectsGroup: game.add.group()
             ,gameInfo: new GameInfo( game )
@@ -22,6 +24,24 @@ define( function( require ){
             ,currentLabel: getTurnLabel( game, 0, 0 )
             ,slingshot: new Slingshot( game )
             ,wind: { vx: 5, vy: 20 }
+            ,cursors: null
+            ,keys: null
+            ,initKeys: function(){
+                this.cursors = game.input.keyboard.createCursorKeys();
+                this.keys = {
+                    a: game.input.keyboard.addKey(Phaser.Keyboard.A)
+                    ,d: game.input.keyboard.addKey(Phaser.Keyboard.D)
+                    ,space: game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+                    ,shift: game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
+                }
+                this.keys.space.onDown.add( this.fireRocket.bind( this, this.planes[1] ), this )
+                this.keys.shift.onDown.add( this.fireRocket.bind( this, this.planes[0] ), this )
+            }
+            ,fireRocket: function(plane){
+                var rocket = new Rocket( game, plane.x, plane.y, plane.angle, plane.spriteKey );
+                this.fire( rocket, rocket.angle, config.rockets.velocity );    
+                this.rockets.push( rocket );
+            }
             ,createPlanes: function( count ){
                 var settings = config.planes.settings;
                 if( count > settings.length ) count = settings.length;           
@@ -59,7 +79,6 @@ define( function( require ){
                     this.planes.push( plane );    
                     
                 }
-                if( count > 0 ) this.setCurrent( 0 );
             }
             ,createBonuses: function(){
                 if( this.bonuses.length < config.bonuses.maxCount ){
@@ -103,35 +122,17 @@ define( function( require ){
             ,createGameInfo: function(){
                 this.gameInfo.init( this.planes );
             }
-            ,setCurrent: function( index ){
-                if( this.planes[index] ){
-                    if( this.current ) this.current.leaveTurn();
-                    this.planes[index].onStartTurn();
-                    this.current = this.planes[index];
-                    this.currentIndex = index;
-                    this.current.bringToTop();
-                    this.currentLabel.fadeIn( this.current.x, this.current.y )
-                }        
-            }
             ,setDamage: function( plane ){
-                
-                plane.health--;
-                plane.dieAnimation = true;
-                plane.setVelocity( 0, 0 );                    
-                
-            }
-            ,processing: function(){ 
-                if( this.state === "end" ) return;
-                
-                this.currentLabel.fadeOut();
-                this.slingshot.line.setTo( -1, -1, -1, -1 );
-                this.state = "processing";
-                
-                for( var i in this.clouds ){
-                    this.clouds[i].setVelocity( this.wind.vx, this.wind.vy );
+                if( !plane.dieAnimation ){
+                    plane.health--;
+                    plane.dieAnimation = true;
+                    plane.setVelocity( 0, 0 );                    
+                    
                 }
-            }
+                
+            }          
             ,waiting: function(){
+                return;
                 if( this.state === "end" ) return;
                 
                 this.turns++;
@@ -146,7 +147,6 @@ define( function( require ){
                 
                 this.state = "waiting";
             }
-            ,isProcessing: function(){ return this.state === "processing"; }
             ,isWaiting: function(){ return this.state === "waiting"; }
             ,isEndGame: function(){ return this.state === "end"; }
             ,endGame: function( winner ){
@@ -154,39 +154,13 @@ define( function( require ){
                 this.destroy();
                 game.state.start("battle-options", true);
             }
-            ,nextTurn: function(){
-                var alivePlanes = this.planes.filter( function( plane ){ return plane.health > 0 } );
-                if( alivePlanes.length === 1 ){
-                    this.endGame( alivePlanes[0] );
-                    return;
-                }else if( alivePlanes.length === 0 ){
-                    this.endGame();
-                    return;
-                }
-                
-                if( this.current.additionalTurn ) {
-                    this.current.additionalTurn = false;
-                    this.currentLabel.fadeIn( this.current.x, this.current.y )
-                    return;
-                }
-                
-                if( this.currentIndex + 1 >= this.planes.length ){
-                    this.setCurrent( 0 );
-                }else{
-                    this.setCurrent( this.currentIndex + 1 );
-                }
-
-                if( this.current.health <= 0 ) {
-                    this.nextTurn();
-                }
-            }
-            ,fire: function( angle, force ){
-                force *= this.slingshot.power;            
-                this.current.angle = angle;                
-                this.current.force = force;
-                this.setVelocityToSprite( this.current, angle, force );
+            ,fire: function( sprite, angle, force ){
+                       
+                sprite.angle = angle;                
+                sprite.force = force;
+                this.setVelocityToSprite( sprite, angle, force );
                         
-                this.current.onFire();
+                
             }
             ,getVelocity: function( angle, force ){
                 var alpha = Math.PI / 180 * angle;
@@ -218,18 +192,11 @@ define( function( require ){
             ,decreaseForce: function( sprite ){
                 if( sprite.force && sprite.force > 0){                
                     sprite.force -= config.world.friction;
-                    if( sprite.force < 0 ) sprite.force = 0;  
+                    if( sprite.force < 0 ) sprite.force = 0;
                     this.setVelocityToSprite( sprite, sprite.angle, sprite.force );
                 }else{
                     sprite.setVelocity( 0, 0 ); 
                     sprite.force = 0;
-                }
-            }
-            ,isCurrentHit: function( x, y ){
-                if( this.current ){
-                    return this.current.body.hitTest( x, y );
-                }else{
-                    return false;
                 }
             }
             ,getPlaneStateString: function( index ){
@@ -245,22 +212,39 @@ define( function( require ){
                 return Math.sqrt( ( b.x - a.x ) * ( b.x - a.x ) + ( b.y - a.y ) * ( b.y - a.y ) );
             }
             ,processForces: function(){
-                if( this.isProcessing() ){            
-                    this.decreaseForce( this.current );
-
-
-                    if( this.current.force <= 0 ){
-                        if( !this.current.bonuses.turn ) this.nextTurn();
-                        else this.current.bonuses.turn = false;
-                        this.waiting();
+  
+                    if( this.cursors.left.isDown ){
+                        this.planes[0].changeAngle( -config.planes.rotateCoeff );                        
                     }
-
-                    if( this.outBounds( this.current ) ) {
-                        this.current.onAnimationEnd = this.nextTurn.bind(this);
-                        this.setDamage( this.current );
-                        this.waiting();
+                    if( this.cursors.right.isDown ){
+                        this.planes[0].changeAngle( config.planes.rotateCoeff );
                     }
-                }
+                    if( this.keys.a.isDown ){
+                        this.planes[1].changeAngle( -config.planes.rotateCoeff );                        
+                    }
+                    if( this.keys.d.isDown ){
+                        this.planes[1].changeAngle( config.planes.rotateCoeff );                        
+                    }
+                    
+                    for( var i in this.planes ){
+                        var plane = this.planes[i];
+                        
+                        this.decreaseForce( plane );
+
+                        if( this.outBounds( plane ) ) {                            
+                            this.setDamage( plane );                            
+                        }
+                    }
+                    
+                    for( var i in this.rockets ){
+                        var rocket = this.rockets[i];
+                        
+                        if( this.outBounds( rocket ) ) {                            
+                            this.rockets.splice( i, 1 );
+                            rocket.destroy();
+                        }
+                    }
+                
             }
             ,planeAnimations: function(){
                 this.planes.map( function( plane ){
@@ -278,25 +262,28 @@ define( function( require ){
                             if( !cloud.wasVisible ) cloud.wasVisible = true;
                         }
                     }.bind(this))
-                if( this.isProcessing() ){
-                    var enemies = this.planes.filter( function( plane, index ){
-                        return index !== this.currentIndex;
-                    }.bind(this))
+                    
+                    for( var i in this.planes ){
+                        var plane = this.planes[i];
+                            
+                        this.rockets.map( function( rocket, index ){
+                            if( this.getDistance( rocket, plane ) < config.planes.hitDistance && rocket.planeSpriteKey != plane.spriteKey ){ // success attack
+                                this.setDamage( plane );     
+                                this.rockets.splice( index, 1 );
+                                rocket.destroy();
+                            }
+                        }.bind(this))
 
-                    enemies.map( function( plane ){
-                        if( this.getDistance( plane, this.current ) < config.planes.hitDistance ){ // success attack
-                            if( !plane.dieAnimation && !plane.hasShild() ) this.setDamage( plane );                        
-                        }
-                    }.bind(this))
-                    
-                    
-                    this.bonuses.map( function( bonus, index ){
-                        if( this.getDistance( bonus, this.current ) < config.bonuses.hitDistance ){
-                            this.current.applyBonus( bonus );
-                            this.bonuses.splice( index, 1 );
-                        }
-                    }.bind(this))
-                }
+
+                        this.bonuses.map( function( bonus, index ){
+                            if( this.getDistance( bonus, plane ) < config.bonuses.hitDistance ){
+                                plane.applyBonus( bonus );
+                                this.bonuses.splice( index, 1 );
+                                this.createBonuses()
+                            }
+                        }.bind(this))
+                    }
+                
             }
             ,destroyItems: function( array ){
                 while( array.length ){
@@ -307,6 +294,7 @@ define( function( require ){
             ,destroy: function(){
                 
                 this.destroyItems( this.planes );                
+                this.destroyItems( this.rockets );                
                 this.destroyItems( this.bonuses );
                 this.destroyItems( this.clouds );
                 this.destroyItems( this.backItems );

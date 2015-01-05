@@ -3,7 +3,7 @@ define( function( require ){
     
     return function( game ){
         this.create = function(){
-            var text = game.add.text( window.innerWidth / 2, window.innerHeight / 2, "Again?", { font: "14pt Verdana", fill: "#FFF" } );
+            var text = game.add.text( window.innerWidth / 2, window.innerHeight / 2, "Again?", config.menu.textStyle );
             text.anchor.setTo( 0.5, 0.5 );    
             text.inputEnabled = true;
 
