@@ -38,9 +38,12 @@ define( function( require ){
                 this.keys.shift.onDown.add( this.fireRocket.bind( this, this.planes[0] ), this )
             }
             ,fireRocket: function(plane){
-                var rocket = new Rocket( game, plane.x, plane.y, plane.angle, plane.spriteKey );
-                this.fire( rocket, rocket.angle, config.rockets.velocity );    
-                this.rockets.push( rocket );
+                if( plane.ammo > 0 ){
+                    var rocket = new Rocket( game, plane.x, plane.y, plane.angle, plane.spriteKey );
+                    this.fire( rocket, rocket.angle, config.rockets.velocity );    
+                    this.rockets.push( rocket );
+                    plane.ammo--;
+                }
             }
             ,createPlanes: function( count ){
                 var settings = config.planes.settings;
@@ -271,6 +274,13 @@ define( function( require ){
                                 this.setDamage( plane );     
                                 this.rockets.splice( index, 1 );
                                 rocket.destroy();
+                            }
+                        }.bind(this))
+                        
+                        this.planes.map( function( anotherPlane, index ){
+                            if( this.getDistance( anotherPlane, plane ) < config.planes.hitDistance && anotherPlane.spriteKey != plane.spriteKey ){ // success attack
+                                this.setDamage( plane );     
+                                this.setDamage( anotherPlane );
                             }
                         }.bind(this))
 

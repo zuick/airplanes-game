@@ -13,7 +13,7 @@ define( function( require ){
         this.spriteKey = spriteKey;
         this.health = config.planes.lives;
         this.basePosition = { x: x, y: y, r: r };
-        
+        this.ammo = config.planes.ammo;
         this.bonuses = [];
         
         this.onAnimationEnd = false;

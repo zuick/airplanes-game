@@ -22,8 +22,8 @@ define( function(){
             ,maxLength: 75
         }
         ,bonuses: {
-            maxCount: 6
-            ,maxCountInTurn: 6
+            maxCount: 10
+            ,maxCountInTurn: 10
             ,hitDistance: 24
             ,applyTime: 200
             ,bounds: 50
@@ -41,6 +41,13 @@ define( function(){
                     ,start: "onTake"
                     ,end: "onFire"
                     ,value: 50
+                }
+                ,{
+                    sprite: "bonus-rocket"
+                    ,name: "rocket"
+                    ,start: "onTake"
+                    ,end: "onFire"
+                    ,value: 5
                 }
             ]
         }
@@ -63,15 +70,17 @@ define( function(){
             ,velocity: 600
         }
         ,planes:{
-            hitDistance: 12
+            hitDistance: 24
             ,lives: 5
+            ,ammo: 5
+            ,maxAmmo: 10
             ,defaultSprite: 'a0'
             ,dieAnimationScaleStep: 0.025
             ,dieAnimationAngleStep: 10
             ,spriteSize: 48
             ,height: 35
-            ,rotateCoeff: 2
-            ,defaultVelocity: 200
+            ,rotateCoeff: 3
+            ,defaultVelocity: 300
             ,settings: [
                 {
                     sprite: 'a1'

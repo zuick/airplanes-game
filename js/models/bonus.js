@@ -9,8 +9,7 @@ define( function( require ){
         
         this.original.body.allowRotation = true;
         this.original.body.angularVelocity = 30;
-        this.original.anchor.setTo(0.5, 0.5);
-        
+        this.original.anchor.setTo(0.5, 0.5);        
         this.shadow = getShadow( game, x, y, config.bonuses.height, settings.sprite );
                         
         this.name = settings.name;
@@ -42,6 +41,10 @@ define( function( require ){
                 this.owner.removeBonus( this );            
             }else if( this.name == 'force' ){
                 this.owner.force += this.value;
+                this.owner.removeBonus( this );            
+            }else if( this.name == 'rocket' ){
+                this.owner.ammo += this.value;
+                if( this.owner.ammo > config.planes.maxAmmo ) this.owner.ammo = config.planes.maxAmmo;
                 this.owner.removeBonus( this );            
             }else{
                 this.active = true;

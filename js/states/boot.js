@@ -16,6 +16,7 @@ define( function( require ){
             game.load.image('bonus-turn', 'assets/bonus-turn.png');
             game.load.image('bonus-force', 'assets/bonus-force.png');
             game.load.image('bonus-shild', 'assets/bonus-shild.png');
+            game.load.image('bonus-rocket', 'assets/bonus-rocket.png');
             game.load.image('turn-label', 'assets/turn-label.png');
             game.load.image('tree', 'assets/fields-tree-1.png');
             game.load.image('back', 'assets/fields-background.png');
