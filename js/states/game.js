@@ -31,12 +31,12 @@ define(function( require ){
         }
 
         this.onMouseUp = function( pointer ){
-            if( !gs.isEndGame() && gs.slingshot.active ){
-                var slingshotStrength = gs.slingshot.getPulling();
-                gs.slingshot.release();
+            var slingshotStrength = gs.slingshot.getPulling();
+            if( !gs.isEndGame() && gs.slingshot.active && slingshotStrength.length > config.planes.spriteSize / 2 ){             
                 gs.fire( slingshotStrength.angle, slingshotStrength.length );
                 gs.processing();
             }
+            gs.slingshot.release();
 
         }
 
