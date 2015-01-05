@@ -23,7 +23,7 @@ define( function(){
             ,hitDistance: 12
             ,applyTime: 200
             ,bounds: 50
-            ,height: 50
+            ,height: 35
             ,settings: [
                 {
                     sprite: "bonus-plane"
@@ -73,7 +73,7 @@ define( function(){
             ,dieAnimationScaleStep: 0.025
             ,dieAnimationAngleStep: 10
             ,spriteSize: 48
-            ,height: 50
+            ,height: 35
             ,settings: [
                 {
                     sprite: 'a1'
