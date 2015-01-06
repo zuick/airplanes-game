@@ -8,13 +8,11 @@ define( function( require ){
         
         if( alignCenter ) btn.anchor.setTo( 0.5, 0.5 );    
         
-        btn.events.onInputOver.add( function(){
-            console.log("over");            
+        btn.events.onInputOver.add( function(){                        
             btn.setStyle( config.menu.btnStyleOver )
         }, this);
         
-        btn.events.onInputOut.add( function(){            
-            console.log("out");
+        btn.events.onInputOut.add( function(){
             btn.setStyle( config.menu.btnStyle )
         }, this);
         

@@ -1,7 +1,12 @@
 define( function( require ){
     var config = require('config');
+    var gettext = require('i18n/gettext');
+    
     return function( game ){
         this.preload = function(){            
+            var winnerText = game.add.text( window.innerWidth / 2, window.innerHeight / 2, gettext('loading') + "...", config.menu.textStyle );
+            winnerText.anchor.setTo( 0.5, 0.5 );
+            
             game.load.spritesheet('a1', 'assets/a1.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
             game.load.spritesheet('a2', 'assets/a2.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
             game.load.spritesheet('a3', 'assets/a3.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
@@ -24,9 +29,10 @@ define( function( require ){
             game.load.image('cloud-m', 'assets/cloud-middle.png');
             game.load.image('cloud-l', 'assets/cloud-large.png');
             game.load.image('rocket', 'assets/rocket.png');
+            
         } 
         this.create = function(){
-            game.state.start( 'game' );            
+            game.state.start( 'main-menu' );            
         }
     }
 })

@@ -9,6 +9,7 @@ define( function( require ){
             winnerText.anchor.setTo( 0.5, 0.5 );
             
             new StateBtn( game, 'again', window.innerWidth / 2, window.innerHeight / 2, true, 'game' );
+            new StateBtn( game, 'to-menu', window.innerWidth / 2, window.innerHeight / 2 + config.menu.btnHeight, true, 'main-menu' );
             
             var winner = game.add.sprite( window.innerWidth / 2, window.innerHeight / 2 - config.planes.spriteSize, this.winnerSpriteKey );
             winner.anchor.setTo( 0.5, 0.5 );    

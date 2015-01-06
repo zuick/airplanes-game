@@ -15,7 +15,8 @@ define( function(){
         ,menu: {
             textStyle: { font: "16pt Verdana", fill: "#FFF" }
             ,btnStyle: { font: "16pt Verdana", fill: "#FFF", stroke: "#497558", strokeThickness: 4 }
-            ,btnStyleOver: { font: "16pt Verdana", fill: "#FFF", stroke: "#5f9973", strokeThickness: 4 }
+            ,btnStyleOver: { font: "16pt Verdana", fill: "#FFF", stroke: "#5f9973", strokeThickness: 4 }            
+            ,btnHeight: 48
         }
         ,slingshot:{
             power: 5
