@@ -1,13 +1,11 @@
 define( function( require ){
     var config = require('config');    
     var utils = require('utils');
-    var Slingshot = require('models/slingshot');
     var Plane = require('models/plane');
     var Rocket = require('models/rocket');
     var Bonus = require('models/bonus');
     var Cloud = require('models/cloud');
     var GameInfo = require('models/game-info');
-    var getTurnLabel = require('models/turn-label');
     
     return function( game ){        
         return {
@@ -20,9 +18,6 @@ define( function( require ){
             ,backItems: []
             ,clouds: []
             ,turns: 0
-            ,currentIndex: 0
-            ,currentLabel: getTurnLabel( game, 0, 0 )
-            ,slingshot: new Slingshot( game )
             ,wind: { vx: 5, vy: 20 }
             ,cursors: null
             ,keys: null
@@ -132,38 +127,22 @@ define( function( require ){
                     plane.setVelocity( 0, 0 );                    
                     
                 }
+                var alivePlanes = this.planes.filter( function( plane ){ return plane.health > 0 } );
                 
-            }          
-            ,waiting: function(){
-                return;
-                if( this.state === "end" ) return;
-                
-                this.turns++;
-                if( this.turns % config.world.bonusFrequence == 0 ){
-                    this.createBonuses()
-                    this.createClouds()
+                if( alivePlanes.length === 1 ){
+                    plane.onAnimationEnd = this.endGame.bind(this, alivePlanes[0] )
                 }
-                
-//                for( var i in this.clouds ){
-//                    this.clouds[i].setVelocity( 0, 0 );
-//                }
-                
-                this.state = "waiting";
             }
-            ,isWaiting: function(){ return this.state === "waiting"; }
             ,isEndGame: function(){ return this.state === "end"; }
             ,endGame: function( winner ){
                 this.state = "end";
                 this.destroy();
-                game.state.start("battle-options", true);
+                game.state.start("results", true, null, winner.spriteKey );
             }
-            ,fire: function( sprite, angle, force ){
-                       
+            ,fire: function( sprite, angle, force ){                       
                 sprite.angle = angle;                
                 sprite.force = force;
-                this.setVelocityToSprite( sprite, angle, force );
-                        
-                
+                this.setVelocityToSprite( sprite, angle, force );                                        
             }
             ,getVelocity: function( angle, force ){
                 var alpha = Math.PI / 180 * angle;
@@ -311,7 +290,6 @@ define( function( require ){
                 
                 this.shadowsGroup.destroy();
                 this.objectsGroup.destroy();
-                this.slingshot.destroy();
                 this.gameInfo.destroy();
             }
         };

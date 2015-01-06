@@ -13,8 +13,9 @@ define( function(){
             ,stuffScale: 1
         }
         ,menu: {
-            textStyle: { font: "14pt Verdana", fill: "#FFF" },
-            textStyleOver: { font: "14pt Verdana", fill: "#FFF" }
+            textStyle: { font: "16pt Verdana", fill: "#FFF" }
+            ,btnStyle: { font: "16pt Verdana", fill: "#FFF", stroke: "#497558", strokeThickness: 4 }
+            ,btnStyleOver: { font: "16pt Verdana", fill: "#FFF", stroke: "#5f9973", strokeThickness: 4 }
         }
         ,slingshot:{
             power: 5
@@ -71,12 +72,12 @@ define( function(){
         }
         ,planes:{
             hitDistance: 24
-            ,lives: 5
+            ,lives: 1
             ,ammo: 5
             ,maxAmmo: 10
             ,defaultSprite: 'a0'
-            ,dieAnimationScaleStep: 0.025
-            ,dieAnimationAngleStep: 10
+            ,dieAnimationScaleStep: 0.016
+            ,dieAnimationAngleStep: 8
             ,spriteSize: 48
             ,height: 35
             ,rotateCoeff: 3
@@ -86,25 +87,25 @@ define( function(){
                     sprite: 'a1'
                     ,color: '#618ac7'
                     ,pos: 'left'
-                    ,offset: 130
+                    ,offset: 48
                 }
                 ,{
                     sprite: 'a2'
                     ,color: '#a6ad42'
                     ,pos: 'right'
-                    ,offset: 130
+                    ,offset: 48
                 }
                 ,{
                     sprite: 'a3'
                     ,color: '#dbb753'
                     ,pos: 'up'
-                    ,offset: 130
+                    ,offset: 48
                 }
                 ,{
                     sprite: 'a4'
                     ,color: '#9e4646'
                     ,pos: 'down'
-                    ,offset: 130
+                    ,offset: 48
                 }
 
             ]
