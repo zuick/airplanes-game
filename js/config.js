@@ -70,16 +70,20 @@ define( function(){
         ,rockets: {
             spriteKey: 'rocket'
             ,velocity: 600
+            ,smokeFrequency: 100
         }
         ,planes:{
             hitDistance: 24
-            ,lives: 1
+            ,lives: 5
             ,ammo: 5
             ,maxAmmo: 10
             ,defaultSprite: 'a0'
             ,dieAnimationScaleStep: 0.016
             ,dieAnimationAngleStep: 8
             ,spriteSize: 48
+            ,smokeSpriteSize: 16
+            ,smokeSpriteKey: 'smoke'
+            ,smokeFrequency: 200
             ,height: 35
             ,rotateCoeff: 3
             ,defaultVelocity: 300

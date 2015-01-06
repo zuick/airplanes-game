@@ -12,6 +12,7 @@ define( function( require ){
             planes: []   
             ,rockets: []
             ,shadowsGroup: game.add.group()
+            ,lowerObjectsGroup: game.add.group()
             ,objectsGroup: game.add.group()
             ,gameInfo: new GameInfo( game )
             ,bonuses: []
@@ -34,7 +35,8 @@ define( function( require ){
             }
             ,fireRocket: function(plane){
                 if( plane.ammo > 0 ){
-                    var rocket = new Rocket( game, plane.x, plane.y, plane.angle, plane.spriteKey );
+                    var rocket = new Rocket( game, plane.x, plane.y, plane.angle, plane.spriteKey, this.shadowsGroup );
+                    this.lowerObjectsGroup.add(rocket.original);
                     this.fire( rocket, rocket.angle, config.rockets.velocity );    
                     this.rockets.push( rocket );
                     plane.ammo--;
@@ -69,10 +71,9 @@ define( function( require ){
                             break;
                         default: break;
                     }
-                    var plane = new Plane( game, x, y, r, settings[i].sprite, settings[i].color, settings[i].pos );
+                    var plane = new Plane( game, x, y, r, settings[i].sprite, settings[i].color, settings[i].pos, this.shadowsGroup );
                     
                     this.objectsGroup.add( plane.original )
-                    this.shadowsGroup.add( plane.shadow )
                     
                     this.planes.push( plane );    
                     
@@ -290,6 +291,7 @@ define( function( require ){
                 
                 this.shadowsGroup.destroy();
                 this.objectsGroup.destroy();
+                this.lowerObjectsGroup.destroy();
                 this.gameInfo.destroy();
             }
         };

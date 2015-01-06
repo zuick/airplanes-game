@@ -1,15 +1,24 @@
 define( function( require ){
     var config = require('config');
     var getShadow = require('models/shadow');
+    var Smoke = require('models/smoke');
     
-    return function Rocket( game, x, y, r, planeSpriteKey ){
+    return function Rocket( game, x, y, r, planeSpriteKey, shadowsGroup ){
         this.original = game.add.sprite( x, y, config.rockets.spriteKey );        
         game.physics.enable( this.original, Phaser.Physics.ARCADE);
         
         this.shadow = getShadow( game, x, y, config.planes.height, config.rockets.spriteKey );
         
         this.original.anchor.setTo(0.5, 0.5);
+        shadowsGroup.add( this.shadow )
         this.planeSpriteKey = planeSpriteKey;
+        
+        this.createSingleSmoke = function(){            
+            var smoke = Smoke( game, this.original.x, this.original.y, this.original.body.velocity.x / 2, this.original.body.velocity.y / 2 );              
+            shadowsGroup.add( smoke );
+        }
+       
+        this.smoke = game.time.events.loop( config.rockets.smokeFrequency, this.createSingleSmoke, this );
         
         this.rotate = function( a ){
             this.original.angle = a;
@@ -45,6 +54,7 @@ define( function( require ){
         
         
         this.destroy = function(){
+            game.time.events.remove( this.smoke )
             this.original.destroy();
             this.shadow.destroy();           
         }

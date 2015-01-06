@@ -2,12 +2,14 @@ define( function( require ){
     var config = require('config');
     var getShadow = require('models/shadow');
     var getShild = require('models/shild');
+    var Smoke = require('models/smoke');
     
-    return function Plane( game, x, y, r, spriteKey, color, pos ){
+    return function Plane( game, x, y, r, spriteKey, color, pos, shadowsGroup ){
         this.original = game.add.sprite( x, y, spriteKey );        
         game.physics.enable( this.original, Phaser.Physics.ARCADE);
         
-        this.shadow = getShadow( game, x, y, config.planes.height, spriteKey );              
+        this.shadow = getShadow( game, x, y, config.planes.height, spriteKey );    
+        shadowsGroup.add( this.shadow );
         this.color = color;
         this.pos = pos;
         this.spriteKey = spriteKey;
@@ -19,6 +21,13 @@ define( function( require ){
         this.onAnimationEnd = false;
         this.dieAnimation = false;
         this.original.anchor.setTo(0.5, 0.5);
+        
+        this.createSingleSmoke = function(){            
+            var smoke = Smoke( game, this.original.x, this.original.y, this.original.body.velocity.x / 2, this.original.body.velocity.y / 2 );              
+            shadowsGroup.add( smoke );
+        }
+       
+        this.smoke = game.time.events.loop( config.planes.smokeFrequency, this.createSingleSmoke, this );
         
         this.rotate = function( a ){
             if( a >= 0 && a < 45 || a > 315 && a <= 360 ){
@@ -149,6 +158,7 @@ define( function( require ){
         }
         
         this.destroy = function(){
+            game.time.events.remove( this.smoke )
             this.original.destroy();
             this.shadow.destroy();
             for( var i in this.bonuses ){

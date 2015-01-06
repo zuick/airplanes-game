@@ -11,6 +11,7 @@ define( function( require ){
             game.load.spritesheet('a2', 'assets/a2.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
             game.load.spritesheet('a3', 'assets/a3.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
             game.load.spritesheet('a4', 'assets/a4.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
+            game.load.spritesheet('smoke', 'assets/smoke.png', config.planes.smokeSpriteSize, config.planes.smokeSpriteSize, 6);
             game.load.spritesheet('exp', 'assets/explosion.png', 24, 24, 6 );
             game.load.spritesheet('shine', 'assets/shine.png', config.planes.spriteSize, config.planes.spriteSize, 11);
             game.load.image('a0', 'assets/a1-template.png' );
