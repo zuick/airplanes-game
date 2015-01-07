@@ -1,9 +1,19 @@
 define( function(){
     return {
         world: {
-            friction: 0  
+            friction: 0             
             ,bonusFrequence: 1
             ,wreckAlpha: 0.5
+            ,explosion:{
+                spriteSize: 24
+                ,spriteKey: 'exp'
+                ,frameRate: 12
+            }
+            ,explosion2:{
+                spriteSize: 24
+                ,spriteKey: 'exp'
+                ,frameRate: 16
+            }
         }
         ,gameInfo: {
             borderSprite: "game-info-border"
@@ -70,7 +80,13 @@ define( function(){
         ,rockets: {
             spriteKey: 'rocket'
             ,velocity: 600
-            ,smokeFrequency: 100
+            ,smoke: {
+                frequency: 100
+                ,spriteKey: 'rocket-smoke'
+                ,spriteSize: 16
+                ,animationFrameRate: 8
+                ,damping: 0.95
+            }
         }
         ,planes:{
             hitDistance: 24
@@ -81,9 +97,13 @@ define( function(){
             ,dieAnimationScaleStep: 0.016
             ,dieAnimationAngleStep: 8
             ,spriteSize: 48
-            ,smokeSpriteSize: 16
-            ,smokeSpriteKey: 'smoke'
-            ,smokeFrequency: 200
+            ,smoke:{
+                frequency: 100
+                ,spriteKey: 'smoke'
+                ,spriteSize: 16
+                ,animationFrameRate: 10
+                ,damping: 0.95
+            }
             ,height: 35
             ,rotateCoeff: 3
             ,defaultVelocity: 300

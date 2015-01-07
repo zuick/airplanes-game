@@ -27,7 +27,8 @@ define(function( require ){
         this.update = function(){        
             gs.processForces( game );        
             gs.processCollisions();                
-            gs.planeAnimations();        
+            gs.processDamping();
+            gs.planeAnimations();      
             gs.gameInfo.update();        
         }
 

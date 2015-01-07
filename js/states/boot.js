@@ -11,8 +11,10 @@ define( function( require ){
             game.load.spritesheet('a2', 'assets/a2.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
             game.load.spritesheet('a3', 'assets/a3.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
             game.load.spritesheet('a4', 'assets/a4.png', config.planes.spriteSize, config.planes.spriteSize, 4 );
-            game.load.spritesheet('smoke', 'assets/smoke.png', config.planes.smokeSpriteSize, config.planes.smokeSpriteSize, 6);
-            game.load.spritesheet('exp', 'assets/explosion.png', 24, 24, 6 );
+            game.load.spritesheet('smoke', 'assets/smoke.png', config.planes.smoke.spriteSize, config.planes.smoke.spriteSize, 7);
+            game.load.spritesheet('rocket-smoke', 'assets/rocket-smoke.png', config.rockets.smoke.spriteSize, config.rockets.smoke.spriteSize, 7);            
+            game.load.spritesheet('exp', 'assets/explosion.png', config.world.explosion.spriteSize, config.world.explosion.spriteSize, 6 );
+            game.load.spritesheet('exp2', 'assets/explosion2.png', config.world.explosion2.spriteSize, config.world.explosion2.spriteSize, 5 );
             game.load.spritesheet('shine', 'assets/shine.png', config.planes.spriteSize, config.planes.spriteSize, 11);
             game.load.image('a0', 'assets/a1-template.png' );
             game.load.image('game-info-border', 'assets/game-info-border.png');

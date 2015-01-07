@@ -12,7 +12,8 @@ define( function( require ){
             planes: []   
             ,rockets: []
             ,shadowsGroup: game.add.group()
-            ,lowerObjectsGroup: game.add.group()
+            ,smokeGroup: game.add.group()
+            ,rocketsGroup: game.add.group()
             ,objectsGroup: game.add.group()
             ,gameInfo: new GameInfo( game )
             ,bonuses: []
@@ -36,7 +37,7 @@ define( function( require ){
             ,fireRocket: function(plane){
                 if( plane.ammo > 0 ){
                     var rocket = new Rocket( game, plane.x, plane.y, plane.angle, plane.spriteKey, this.shadowsGroup );
-                    this.lowerObjectsGroup.add(rocket.original);
+                    this.rocketsGroup.add(rocket.original);
                     this.fire( rocket, rocket.angle, config.rockets.velocity );    
                     this.rockets.push( rocket );
                     plane.ammo--;
@@ -71,7 +72,7 @@ define( function( require ){
                             break;
                         default: break;
                     }
-                    var plane = new Plane( game, x, y, r, settings[i].sprite, settings[i].color, settings[i].pos, this.shadowsGroup );
+                    var plane = new Plane( game, x, y, r, settings[i].sprite, settings[i].color, settings[i].pos, this.shadowsGroup, this.smokeGroup );
                     
                     this.objectsGroup.add( plane.original )
                     
@@ -275,6 +276,14 @@ define( function( require ){
                     }
                 
             }
+            ,processDamping: function(){
+                this.smokeGroup.forEach( function( smoke ){
+                    if( smoke.body.damping ){
+                        smoke.body.velocity.x *= smoke.body.damping;
+                        smoke.body.velocity.y *= smoke.body.damping;
+                    }
+                })
+            }
             ,destroyItems: function( array ){
                 while( array.length ){
                     var item = array.pop();
@@ -291,7 +300,8 @@ define( function( require ){
                 
                 this.shadowsGroup.destroy();
                 this.objectsGroup.destroy();
-                this.lowerObjectsGroup.destroy();
+                this.smokeGroup.destroy();
+                this.rocketsGroup.destroy();
                 this.gameInfo.destroy();
             }
         };

@@ -4,7 +4,7 @@ define( function( require ){
     var getShild = require('models/shild');
     var Smoke = require('models/smoke');
     
-    return function Plane( game, x, y, r, spriteKey, color, pos, shadowsGroup ){
+    return function Plane( game, x, y, r, spriteKey, color, pos, shadowsGroup, smokeGroup ){
         this.original = game.add.sprite( x, y, spriteKey );        
         game.physics.enable( this.original, Phaser.Physics.ARCADE);
         
@@ -23,11 +23,11 @@ define( function( require ){
         this.original.anchor.setTo(0.5, 0.5);
         
         this.createSingleSmoke = function(){            
-            var smoke = Smoke( game, this.original.x, this.original.y, this.original.body.velocity.x / 2, this.original.body.velocity.y / 2 );              
-            shadowsGroup.add( smoke );
+            var smoke = Smoke( game, this.original.x, this.original.y, this.original.body.velocity.x / 2, this.original.body.velocity.y / 2, config.planes.smoke );              
+            smokeGroup.add( smoke );
         }
        
-        this.smoke = game.time.events.loop( config.planes.smokeFrequency, this.createSingleSmoke, this );
+        this.smoke = game.time.events.loop( config.planes.smoke.frequency, this.createSingleSmoke, this );
         
         this.rotate = function( a ){
             if( a >= 0 && a < 45 || a > 315 && a <= 360 ){
@@ -64,6 +64,7 @@ define( function( require ){
             this.original.scale.setTo( 1, 1 );
             this.original.alpha = 1;
             this.force = config.planes.defaultVelocity;
+            this.ammo = config.planes.ammo;
             this.setPosition( this.basePosition.x - this.original.body.width / 2, this.basePosition.y - this.original.body.height / 2 );                            
             this.rotate( this.basePosition.r )
             
@@ -90,10 +91,11 @@ define( function( require ){
                     this.original.alpha = this.scale.x;
                     this.rotate( this.angle + config.planes.dieAnimationAngleStep );
                 }else{
-                    var explosion = game.add.sprite( this.original.x, this.original.y, "exp", 0 );
+                    var explosion = game.add.sprite( this.original.x, this.original.y,  config.world.explosion.spriteKey, 0 );
                     explosion.anchor.setTo(0.5, 0.5);
+                    explosion.scale.setTo( 0.5 );
                     explosion.animations.add("bang");
-                    explosion.animations.play("bang", 16, false, true);                                        
+                    explosion.animations.play("bang", config.world.explosion.frameRate, false, true);                                        
                     
                     if( this.health > 0 ){                        
                         this.reanimate();

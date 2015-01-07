@@ -14,11 +14,11 @@ define( function( require ){
         this.planeSpriteKey = planeSpriteKey;
         
         this.createSingleSmoke = function(){            
-            var smoke = Smoke( game, this.original.x, this.original.y, this.original.body.velocity.x / 2, this.original.body.velocity.y / 2 );              
+            var smoke = Smoke( game, this.original.x, this.original.y, this.original.body.velocity.x / 2, this.original.body.velocity.y / 2, config.rockets.smoke );              
             shadowsGroup.add( smoke );
         }
        
-        this.smoke = game.time.events.loop( config.rockets.smokeFrequency, this.createSingleSmoke, this );
+        this.smoke = game.time.events.loop( config.rockets.smoke.frequency, this.createSingleSmoke, this );
         
         this.rotate = function( a ){
             this.original.angle = a;
@@ -54,7 +54,12 @@ define( function( require ){
         
         
         this.destroy = function(){
-            game.time.events.remove( this.smoke )
+            game.time.events.remove( this.smoke );
+            var explosion = game.add.sprite( this.original.x, this.original.y, config.world.explosion2.spriteKey, 0 );
+            explosion.anchor.setTo(0.5, 0.5);
+            explosion.animations.add("bang");
+            explosion.animations.play("bang", config.world.explosion.frameRate, false, true); 
+            
             this.original.destroy();
             this.shadow.destroy();           
         }
