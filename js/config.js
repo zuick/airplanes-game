@@ -111,7 +111,7 @@ define( function(){
             }
             ,height: 35
             ,rotateCoeff: 3
-            ,defaultVelocity: 300
+            ,defaultVelocity: 200
             ,settings: [
                 {
                     sprite: 'a1'

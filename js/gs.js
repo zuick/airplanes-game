@@ -57,7 +57,7 @@ define( function( require ){
                                 pos.right.x = config.buttons.offsetX;
                                 
                                 pos.fire.y = config.buttons.offsetY;
-                                pos.left.y = game.world.height - config.buttons.offsetY - config.buttons.spriteSize * 1.5;
+                                pos.left.y = game.world.height - config.buttons.offsetY - config.buttons.spriteSize * 2.5;
                                 pos.right.y = game.world.height - config.buttons.offsetY;
                                 
                                 r = 90;
@@ -69,7 +69,7 @@ define( function( require ){
                                 
                                 ;
                                 pos.fire.y = game.world.height - config.buttons.offsetY;
-                                pos.left.y = config.buttons.offsetY + config.buttons.spriteSize * 1.5;
+                                pos.left.y = config.buttons.offsetY + config.buttons.spriteSize * 2.5;
                                 pos.right.y = config.buttons.offsetY;
                                 
                                 r = 270;
