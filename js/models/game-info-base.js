@@ -40,11 +40,7 @@ define( function( require ){
                     ,angle: this.info.angle
                     ,scale: true
                 })
-            }
-            
-            if( this.info.shild ) stuff.push( { sprite: this.getBonusSprite("shild") } )
-            if( this.info.turn ) stuff.push( { sprite: this.getBonusSprite("turn") } )
-            if( this.info.force ) stuff.push( { sprite: this.getBonusSprite("force") } )
+            }           
             
             for( var i = 0; i < stuff.length; i++ ){
                 var x = this.background.x + stuffWidth / 2 + i * dx;

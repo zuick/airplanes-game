@@ -27,47 +27,31 @@ define( function( require ){
         }
         
         this.belogsTo = function( obj ){
-            this.owner = obj;            
-            game.add.tween( this.shadow.scale ).to( { x: 0, y: 0 }, config.bonuses.applyTime, Phaser.Easing.Linear.None, true, 0, 0, false );
-            game.add.tween( this.original.scale ).to( { x: 0, y: 0 }, config.bonuses.applyTime, Phaser.Easing.Linear.None, true, 0, 0, false );                        
+            this.owner = obj;                                   
         }
-        
+                
         this.activate = function(){
             if( this.name == 'plane' ){
                 this.owner.health++;
-                this.owner.removeBonus( this );
             }else if( this.name == 'turn' ){
-                this.owner.additionalTurn = true;
-                this.owner.removeBonus( this );            
+                this.owner.additionalTurn = true;          
             }else if( this.name == 'force' ){
-                this.owner.force += this.value;
-                this.owner.removeBonus( this );            
+                this.owner.force += this.value;          
             }else if( this.name == 'rocket' ){
                 this.owner.ammo += this.value;
-                if( this.owner.ammo > config.planes.maxAmmo ) this.owner.ammo = config.planes.maxAmmo;
-                this.owner.removeBonus( this );            
+                if( this.owner.ammo > config.planes.maxAmmo ) this.owner.ammo = config.planes.maxAmmo;          
             }else{
                 this.active = true;
             }
             
-            if( this.name == "shild" ){
-                this.owner.shild = getShild( game, this.owner.x, this.owner.y, this.owner.angle );
-            }
+            var scaleOut = game.add.tween( this.shadow.scale ).to( { x: 0, y: 0 }, config.bonuses.applyTime, Phaser.Easing.Linear.None, true, 0, 0, false );
+            game.add.tween( this.original.scale ).to( { x: 0, y: 0 }, config.bonuses.applyTime, Phaser.Easing.Linear.None, true, 0, 0, false ); 
+            scaleOut.onComplete.add( function(){
+                this.owner.removeBonus( this );
+            }.bind(this))
         }
         
-        this.destroy = function(){            
-            if( this.name == "shild" ){
-                
-                if( this.owner && this.owner.shild ){
-                    var scaleOut = game.add.tween( this.owner.shild.scale ).to( { x: 1.5, y: 1.5 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false );
-                    var fadeOut = game.add.tween( this.owner.shild ).to( { alpha: 0 }, 200, Phaser.Easing.Quadratic.None, true, 0, 0, false );
-                    scaleOut.onComplete.add( function(){
-                        this.owner.shild.destroy();
-                    }.bind(this))
-                }                
-                
-            }
-            
+        this.destroy = function(){
             this.original.destroy();
             this.shadow.destroy();
         }
