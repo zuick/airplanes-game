@@ -16,6 +16,9 @@ define( function( require ){
             game.load.spritesheet('exp', 'assets/explosion.png', config.world.explosion.spriteSize, config.world.explosion.spriteSize, 6 );
             game.load.spritesheet('exp2', 'assets/explosion2.png', config.world.explosion2.spriteSize, config.world.explosion2.spriteSize, 5 );
             game.load.spritesheet('shine', 'assets/shine.png', config.planes.spriteSize, config.planes.spriteSize, 11);
+            game.load.spritesheet('fire-btn', 'assets/fire-btn.png', config.buttons.spriteSize, config.buttons.spriteSize, 3);
+            game.load.spritesheet('left-btn', 'assets/left-btn.png', config.buttons.spriteSize, config.buttons.spriteSize, 3);
+            game.load.spritesheet('right-btn', 'assets/right-btn.png', config.buttons.spriteSize, config.buttons.spriteSize, 3);
             game.load.image('a0', 'assets/a1-template.png' );
             game.load.image('game-info-border', 'assets/game-info-border.png');
             game.load.image('game-info-base', 'assets/game-info-base.png');

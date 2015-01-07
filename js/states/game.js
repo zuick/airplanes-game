@@ -7,6 +7,11 @@ define(function( require ){
             game.stage.backgroundColor = '#000';
             game.add.tileSprite( 0, 0, game.world.width, game.world.height, 'back' );
 
+            game.input.addPointer();
+            game.input.addPointer();
+            game.input.addPointer();
+            game.input.addPointer();
+    
             gs = require("gs")(game);
             gs.createBackgroundItems();
             gs.createClouds();
@@ -25,7 +30,7 @@ define(function( require ){
         
 
         this.update = function(){        
-            gs.processForces( game );        
+            gs.updateAngle( game );        
             gs.processCollisions();                
             gs.processDamping();
             gs.planeAnimations();      

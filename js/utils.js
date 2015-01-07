@@ -20,6 +20,14 @@ define( function(){
                 b: parseInt(result[3], 16)
             } : null;
         }
+        ,isTouchable: function() {
+            try {  
+              document.createEvent("TouchEvent");  
+              return true;  
+            } catch (e) {  
+              return false;  
+            }
+        }
     }
 })
 

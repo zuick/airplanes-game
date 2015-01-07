@@ -39,10 +39,6 @@ define( function( require ){
             var baseWidth = config.gameInfo.baseWidth;
             var borderSprite = config.gameInfo.borderSprite;            
             
-            this.borders.add( game.add.tileSprite( 0, 0, borderWidth, game.height, borderSprite ) )
-            this.borders.add( game.add.tileSprite( 0, 0, game.width, borderWidth, borderSprite ) )
-            this.borders.add( game.add.tileSprite( game.width - borderWidth, 0, borderWidth, game.height, borderSprite ) )
-            this.borders.add( game.add.tileSprite( 0, game.height - borderWidth, game.width, borderWidth, borderSprite ) )
             
             for( var i in this.planes ){
                 
@@ -55,6 +51,7 @@ define( function( require ){
                             ,borderWidth, baseWidth 
                             ,this.getInfo( this.planes[i] )
                             ,this.planes[i].pos );
+                        this.borders.add( game.add.tileSprite( 0, 0, borderWidth, game.height, borderSprite ) )
                         break;
                     case 'right':
                         this.bases[this.planes[i].pos] = new Base( 
@@ -64,6 +61,7 @@ define( function( require ){
                             ,borderWidth, baseWidth
                             ,this.getInfo( this.planes[i] )
                             ,this.planes[i].pos );
+                        this.borders.add( game.add.tileSprite( game.width - borderWidth, 0, borderWidth, game.height, borderSprite ) )
                         break;
                     case 'up':
                         this.bases[this.planes[i].pos] = new Base( 
@@ -73,6 +71,7 @@ define( function( require ){
                             ,baseWidth, borderWidth
                             ,this.getInfo( this.planes[i] )
                             ,this.planes[i].pos );
+                        this.borders.add( game.add.tileSprite( 0, 0, game.width, borderWidth, borderSprite ) )
                         break;
                     case 'down':
                         this.bases[this.planes[i].pos] = new Base( 
@@ -81,6 +80,7 @@ define( function( require ){
                             ,game.height - borderWidth, baseWidth
                             ,borderWidth, this.getInfo( this.planes[i] )
                             ,this.planes[i].pos );
+                        this.borders.add( game.add.tileSprite( 0, game.height - borderWidth, game.width, borderWidth, borderSprite ) )
                         break;
                     default: break;
                 }

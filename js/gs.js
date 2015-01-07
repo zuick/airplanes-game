@@ -6,6 +6,7 @@ define( function( require ){
     var Bonus = require('models/bonus');
     var Cloud = require('models/cloud');
     var GameInfo = require('models/game-info');
+    var GetTouchButton = require('buttons/touch-button');
     
     return function( game ){        
         return {
@@ -30,14 +31,96 @@ define( function( require ){
                     ,d: game.input.keyboard.addKey(Phaser.Keyboard.D)
                     ,space: game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
                     ,shift: game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
+                    ,touch: false
                 }
                 this.keys.space.onDown.add( this.fireRocket.bind( this, this.planes[1] ), this )
                 this.keys.shift.onDown.add( this.fireRocket.bind( this, this.planes[0] ), this )
+                
+                this.createTouchButtons();
+            }
+            ,createTouchButtons: function(){
+                if( utils.isTouchable() ){
+                    this.keys.touch = [];
+                    
+                    for( var i = 0; i < this.planes.length; i++ ){
+                        var x, y, r = 0;
+                        var pos = {
+                            fire: { x: 0, y: 0 }
+                            ,left: { x: 0, y: 0 }
+                            ,right: { x: 0, y: 0 }
+                        }
+                        
+                        switch( this.planes[i].pos ){
+                            case 'left':
+                                pos.fire.x = config.buttons.offsetX;
+                                pos.left.x = config.buttons.offsetX;
+                                pos.right.x = config.buttons.offsetX;
+                                
+                                pos.fire.y = config.buttons.offsetY;
+                                pos.left.y = game.world.height - config.buttons.offsetY - config.buttons.spriteSize * 1.5;
+                                pos.right.y = game.world.height - config.buttons.offsetY;
+                                
+                                r = 90;
+                                break;
+                            case 'right':
+                                pos.fire.x = game.world.width - config.buttons.offsetX;
+                                pos.left.x = game.world.width - config.buttons.offsetX;
+                                pos.right.x = game.world.width - config.buttons.offsetX;
+                                
+                                ;
+                                pos.fire.y = game.world.height - config.buttons.offsetY;
+                                pos.left.y = config.buttons.offsetY + config.buttons.spriteSize * 1.5;
+                                pos.right.y = config.buttons.offsetY;
+                                
+                                r = 270;
+                                break;
+                            case 'up':
+                                x = config.buttons.offsetY;
+                                y = config.buttons.offsetX;
+                                r = 0;
+                                break;
+                            case 'down':
+                                x = config.buttons.offsetY;
+                                y = game.world.height - config.buttons.offsetX;
+                                r = 180;
+                                break;
+                            default: break;
+                        }                           
+                        
+                        var touchBtns = {
+                            left: false
+                            ,right: false                            
+                        };
+                        
+                        GetTouchButton( game, pos.fire.x, pos.fire.y, r, config.buttons.fireSpriteKey, this.fireRocket.bind( this, this.planes[i] ), this );
+                        
+                        var left = GetTouchButton( game, pos.left.x, pos.left.y, r, config.buttons.leftSpriteKey )  
+                        var right = GetTouchButton( game, pos.right.x, pos.right.y, r, config.buttons.rightSpriteKey )  
+                        
+                        left.events.onInputDown.add( function( index ){
+                            this.keys.touch[index].left = true;
+                        }.bind(this, i))
+                        
+                        left.events.onInputUp.add( function( index ){
+                            this.keys.touch[index].left = false;
+                        }.bind(this, i))
+                        
+                        right.events.onInputDown.add( function( index ){
+                            this.keys.touch[index].right = true;
+                        }.bind(this, i))
+                        
+                        right.events.onInputUp.add( function( index ){
+                            this.keys.touch[index].right = false;
+                        }.bind(this, i))
+                        
+                        this.keys.touch.push( touchBtns )
+                    }
+                }
+                
             }
             ,fireRocket: function(plane){
                 if( plane.ammo > 0 ){
-                    var rocket = new Rocket( game, plane.x, plane.y, plane.angle, plane.spriteKey, this.shadowsGroup );
-                    this.rocketsGroup.add(rocket.original);
+                    var rocket = new Rocket( game, plane.x, plane.y, plane.angle, plane.spriteKey, this.shadowsGroup, this.rocketsGroup );                    
                     this.fire( rocket, rocket.angle, config.rockets.velocity );    
                     this.rockets.push( rocket );
                     plane.ammo--;
@@ -158,7 +241,7 @@ define( function( require ){
             }
             ,outBounds: function( sprite, withSize ){ 
                 var center = this.getCenter( sprite );
-                var borderWidth = config.gameInfo.borderWidth;
+                var borderWidth = 0;
                 
                 var w = 0;
                 var h = 0;
@@ -173,16 +256,6 @@ define( function( require ){
                     center.y - h / 2 >= game.world.height - borderWidth ) return true;
                 return false;
             }
-            ,decreaseForce: function( sprite ){
-                if( sprite.force && sprite.force > 0){                
-                    sprite.force -= config.world.friction;
-                    if( sprite.force < 0 ) sprite.force = 0;
-                    this.setVelocityToSprite( sprite, sprite.angle, sprite.force );
-                }else{
-                    sprite.setVelocity( 0, 0 ); 
-                    sprite.force = 0;
-                }
-            }
             ,getPlaneStateString: function( index ){
                 var state = this.planes[index].health;            
                 return state;
@@ -195,40 +268,24 @@ define( function( require ){
                 var b = this.getCenter( b );
                 return Math.sqrt( ( b.x - a.x ) * ( b.x - a.x ) + ( b.y - a.y ) * ( b.y - a.y ) );
             }
-            ,processForces: function(){
+            ,updateAngle: function(){
   
-                    if( this.cursors.left.isDown ){
+                    if( this.cursors.left.isDown || ( this.keys.touch && this.keys.touch[0].left ) ){
                         this.planes[0].changeAngle( -config.planes.rotateCoeff );                        
                     }
-                    if( this.cursors.right.isDown ){
+                    if( this.cursors.right.isDown || ( this.keys.touch && this.keys.touch[0].right ) ){
                         this.planes[0].changeAngle( config.planes.rotateCoeff );
                     }
-                    if( this.keys.a.isDown ){
+                    if( this.keys.a.isDown || ( this.keys.touch && this.keys.touch[1].left ) ){
                         this.planes[1].changeAngle( -config.planes.rotateCoeff );                        
                     }
-                    if( this.keys.d.isDown ){
+                    if( this.keys.d.isDown || ( this.keys.touch && this.keys.touch[1].right ) ){
                         this.planes[1].changeAngle( config.planes.rotateCoeff );                        
                     }
                     
                     for( var i in this.planes ){
-                        var plane = this.planes[i];
-                        
-                        this.decreaseForce( plane );
-
-                        if( this.outBounds( plane ) ) {                            
-                            this.setDamage( plane );                            
-                        }
-                    }
-                    
-                    for( var i in this.rockets ){
-                        var rocket = this.rockets[i];
-                        
-                        if( this.outBounds( rocket ) ) {                            
-                            this.rockets.splice( i, 1 );
-                            rocket.destroy();
-                        }
-                    }
-                
+                        this.setVelocityToSprite( this.planes[i], this.planes[i].angle, this.planes[i].force );
+                    }   
             }
             ,planeAnimations: function(){
                 this.planes.map( function( plane ){
@@ -273,6 +330,19 @@ define( function( require ){
                                 this.createBonuses()
                             }
                         }.bind(this))
+                        
+                        if( this.outBounds( plane ) ) {                            
+                            this.setDamage( plane );                            
+                        }
+                    }
+                    
+                    for( var i in this.rockets ){
+                        var rocket = this.rockets[i];
+                        
+                        if( this.outBounds( rocket ) ) {                            
+                            this.rockets.splice( i, 1 );
+                            rocket.destroy();
+                        }
                     }
                 
             }

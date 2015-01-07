@@ -3,9 +3,11 @@ define( function( require ){
     var getShadow = require('models/shadow');
     var Smoke = require('models/smoke');
     
-    return function Rocket( game, x, y, r, planeSpriteKey, shadowsGroup ){
+    return function Rocket( game, x, y, r, planeSpriteKey, shadowsGroup, rocketsGroup ){
         this.original = game.add.sprite( x, y, config.rockets.spriteKey );        
         game.physics.enable( this.original, Phaser.Physics.ARCADE);
+        
+        rocketsGroup.add(this.original);
         
         this.shadow = getShadow( game, x, y, config.planes.height, config.rockets.spriteKey );
         
@@ -59,7 +61,7 @@ define( function( require ){
             explosion.anchor.setTo(0.5, 0.5);
             explosion.animations.add("bang");
             explosion.animations.play("bang", config.world.explosion.frameRate, false, true); 
-            
+            rocketsGroup.add(explosion)
             this.original.destroy();
             this.shadow.destroy();           
         }
