@@ -23,8 +23,8 @@ define( function(){
             ,stuffScale: 1
         }
         ,menu: {
-            textStyle: { font: "16pt Verdana", fill: "#FFF" }
-            ,btnStyle: { font: "16pt Verdana", fill: "#FFF", stroke: "#497558", strokeThickness: 4 }
+            textStyle: { font: "16pt Verdana", fill: "#FFF", stroke: "#2f3e75", strokeThickness: 4 }
+            ,btnStyle: { font: "16pt Verdana", fill: "#FFF", stroke: "#2f7546", strokeThickness: 4 }
             ,btnStyleOver: { font: "16pt Verdana", fill: "#FFF", stroke: "#5f9973", strokeThickness: 4 }            
             ,btnHeight: 48
         }
