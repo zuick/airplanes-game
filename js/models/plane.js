@@ -125,11 +125,9 @@ define( function( require ){
         }
         
         this.applyBonus = function( bonus ){
-            if( !this.findBonusByName( bonus.name ) ){
-                this.bonuses.push( bonus )
-                bonus.belogsTo( this );
-                if( bonus.start == "onTake" ) this.useBonus( bonus )             
-            }
+            this.bonuses.push( bonus )
+            bonus.belogsTo( this );
+            this.useBonus( bonus );                       
         }
         
         this.findBonusByName = function( name ){

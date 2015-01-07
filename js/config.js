@@ -44,21 +44,18 @@ define( function(){
                 {
                     sprite: "bonus-plane"
                     ,name: "plane"
-                    ,start: "onTake"
-                    ,end: "onTake"
+                    ,frequency: 0.2
                 }                
                 ,{
                     sprite: "bonus-force"
                     ,name: "force"
-                    ,start: "onTake"
-                    ,end: "onFire"
+                    ,frequency: 0.2
                     ,value: 50
                 }
                 ,{
                     sprite: "bonus-rocket"
                     ,name: "rocket"
-                    ,start: "onTake"
-                    ,end: "onFire"
+                    ,frequency: 0.6
                     ,value: 5
                 }
             ]
